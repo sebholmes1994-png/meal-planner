@@ -9,15 +9,125 @@
 <title>Meal Planner</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f0;min-height:100vh;color:#1a1a1a;}
-.app{max-width:680px;margin:0 auto;padding:1rem;padding-bottom:5.5rem;}
+
+/* ── THEME VARIABLES ─────────────────────────────────────── */
+:root{
+  --accent:#1D9E75;--accent-dark:#0F6E56;--accent-light:#E1F5EE;--accent-mid:#9FE1CB;
+  --bg-page:#f5f5f0;--bg-card:#fff;--bg-input:#fff;
+  --text-primary:#1a1a1a;--text-secondary:#666;--text-hint:#aaa;
+  --border:rgba(0,0,0,0.12);--border-strong:rgba(0,0,0,0.18);
+  --nav-bg:#fff;--nav-border:rgba(0,0,0,0.12);
+  --today-bg:#fff;--today-border:#1D9E75;
+  --selected-bg:#f0fdf8;--selected-border:#9FE1CB;
+  --stat-bg:#f0f0f0;
+}
+/* Terracotta */
+body.theme-terra{
+  --accent:#D85A30;--accent-dark:#712B13;--accent-light:#FAECE7;--accent-mid:#F5C4B3;
+  --bg-page:#faf6f2;--selected-bg:#FAECE7;--selected-border:#F5C4B3;
+  --today-border:#D85A30;
+}
+/* Navy */
+body.theme-navy{
+  --accent:#185FA5;--accent-dark:#0C447C;--accent-light:#E6F1FB;--accent-mid:#B5D4F4;
+  --bg-page:#f0f4f8;--selected-bg:#E6F1FB;--selected-border:#B5D4F4;
+  --today-border:#185FA5;
+}
+/* Purple */
+body.theme-purple{
+  --accent:#534AB7;--accent-dark:#3C3489;--accent-light:#EEEDFE;--accent-mid:#CECBF6;
+  --bg-page:#f5f3ff;--selected-bg:#EEEDFE;--selected-border:#CECBF6;
+  --today-border:#534AB7;
+}
+/* Dark mode */
+body.dark{
+  --bg-page:#0f0f0f;--bg-card:#1c1c1e;--bg-input:#2c2c2e;
+  --text-primary:#ffffff;--text-secondary:#e0e0e0;--text-hint:#999;
+  --border:rgba(255,255,255,0.12);--border-strong:rgba(255,255,255,0.22);
+  --nav-bg:#1c1c1e;--nav-border:rgba(255,255,255,0.1);
+  --today-bg:#1c1c1e;--stat-bg:#2c2c2e;
+}
+body.dark .sync-pill{background:#2c2c2e;border-color:rgba(255,255,255,0.15);color:#e0e0e0;}
+body.dark input,body.dark select,body.dark textarea{background:var(--bg-input);color:#fff;border-color:var(--border-strong);}
+body.dark input::placeholder,body.dark textarea::placeholder{color:#888;}
+body.dark .card{background:var(--bg-card);border-color:var(--border);}
+body.dark .meal-card{background:var(--bg-card);border-color:var(--border);}
+body.dark .meal-card .meal-title{color:#fff !important;}
+body.dark .meal-card .meal-meta{color:#ccc !important;}
+body.dark .meal-card .meal-info div{color:#ddd;}
+body.dark .shop-item{background:var(--bg-card);border-color:var(--border);}
+body.dark .shop-item .shop-name{color:#fff;}
+body.dark .shop-item .shop-qty{color:#ccc;}
+body.dark .today-card,body.dark .tomorrow-card{background:var(--bg-card);}
+body.dark .spot-title{color:#fff;}
+body.dark .spot-meta{color:var(--text-secondary);}
+body.dark .week-cell{background:#2c2c2e;border-color:var(--border);}
+body.dark .week-cell.has-meal{background:var(--selected-bg);}
+body.dark .cell-name{color:#fff;}
+body.dark .week-day-name{color:#fff;}
+body.dark .week-day-date{color:#ccc;}
+body.dark .modal{background:#1c1c1e;}
+body.dark .modal h2{color:#fff;}
+body.dark .day-popup{background:#1c1c1e;}
+body.dark .note-bubble{background:#2c2c2e;color:#e0e0e0;}
+body.dark .portions-preview{background:#2c2c2e;color:#e0e0e0;}
+body.dark .stat-c{background:var(--stat-bg);}
+body.dark .stat-n{color:#fff;}
+body.dark .stat-l{color:#ccc;}
+body.dark .btn{color:#fff;border-color:var(--border-strong);}
+body.dark .btn:hover{background:#333;}
+body.dark .btn-primary{color:#fff;}
+body.dark .btn-danger{color:#ff6b6b;border-color:#ff6b6b;}
+body.dark .btn-ghost{color:#ccc;}
+body.dark .filter-chip{color:#ddd;border-color:var(--border);}
+body.dark .filter-chip.active{color:#fff;}
+body.dark .section-hdr{color:#bbb;}
+body.dark .lbl{color:#ccc;}
+body.dark .settings-lbl{color:#fff;}
+body.dark .settings-sub{color:#bbb;}
+body.dark .setup-section{background:var(--bg-card);}
+body.dark .setup-screen{background:#0f0f0f;}
+body.dark .ing-item{color:#e0e0e0;}
+body.dark .ing-name{color:#fff;}
+body.dark .step-item{color:#e0e0e0;}
+body.dark .portions-ctrl span{color:#ccc;}
+body.dark .p-btn{color:#fff;border-color:var(--border-strong);}
+body.dark .p-num{color:#fff;}
+body.dark .clear-btn{color:#ff8888;}
+body.dark .header h1{color:#fff;}
+body.dark .header p{color:#ccc;}
+body.dark .nav-btn{color:#888;}
+body.dark .nav-btn.active{color:var(--accent);}
+body.dark .week-cell.today-cell{border-color:var(--accent);}
+body.dark .ing-item.have-it{opacity:0.35;}
+body.dark .shop-item.ticked{opacity:0.35;}
+body.dark .top-bar span{color:var(--text-primary);}
+body.dark .section-hdr{color:#aaa;}
+body.dark .note-btn{background:#2c2c2e;color:#ccc;border:0.5px solid var(--border);}
+body.dark .today-card{border-color:var(--accent);}
+body.dark .tag-meal{background:#0F6E56;color:#E1F5EE;}
+body.dark .tag-staple{background:#633806;color:#FAEEDA;}
+body.dark .tag-extra{background:#0C447C;color:#E6F1FB;}
+body.dark .badge-green{background:#085041;color:#9FE1CB;}
+body.dark .badge-amber{background:#633806;color:#FAC775;}
+body.dark .badge-blue{background:#0C447C;color:#B5D4F4;}
+body.dark .badge-red{background:#791F1F;color:#F7C1C1;}
+body.dark .badge-purple{background:#3C3489;color:#CECBF6;}
+body.dark .alert-success{background:#085041;color:#9FE1CB;}
+body.dark .alert-info{background:#0C447C;color:#B5D4F4;}
+body.dark .alert-warn{background:#633806;color:#FAC775;}
+body.dark .alert-err{background:#791F1F;color:#F7C1C1;}
+/* ─────────────────────────────────────────────────────────── */
+
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg-page);min-height:100vh;color:var(--text-primary);}
+.app{max-width:680px;margin:0 auto;padding:1rem;padding-bottom:7rem;}
 /* header */
 .header{padding:1.25rem 0 0.75rem;display:flex;justify-content:space-between;align-items:flex-start;}
 .header h1{font-size:22px;font-weight:600;letter-spacing:-0.3px;}
-.header p{font-size:13px;color:#666;margin-top:2px;}
+.header p{font-size:13px;color:var(--text-secondary);margin-top:2px;}
 .sync-pill{display:flex;align-items:center;gap:5px;font-size:11px;padding:4px 10px;border-radius:20px;border:0.5px solid rgba(0,0,0,0.12);background:#fff;color:#666;cursor:pointer;white-space:nowrap;}
 .sync-dot{width:6px;height:6px;border-radius:50%;background:#ccc;flex-shrink:0;}
-.sync-dot.live{background:#1D9E75;animation:pulse 2s infinite;}
+.sync-dot.live{background:var(--accent);animation:pulse 2s infinite;}
 .sync-dot.error{background:#E24B4A;}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
 /* setup screen */
@@ -30,27 +140,27 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .setup-section p{font-size:13px;color:#666;margin-bottom:10px;line-height:1.5;}
 .setup-steps{counter-reset:step;}
 .setup-step{display:flex;gap:10px;margin-bottom:8px;font-size:13px;color:#444;align-items:flex-start;}
-.step-num{width:20px;height:20px;border-radius:50%;background:#1D9E75;color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:600;margin-top:1px;}
+.step-num{width:20px;height:20px;border-radius:50%;background:var(--accent);color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:600;margin-top:1px;}
 .setup-link{color:#185FA5;text-decoration:none;}
 .setup-link:hover{text-decoration:underline;}
 /* tabs */
 /* bottom nav */
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;height:64px;background:#fff;border-top:0.5px solid rgba(0,0,0,0.12);display:flex;align-items:stretch;justify-content:space-around;z-index:500;padding-bottom:env(safe-area-inset-bottom);}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;height:64px;background:var(--nav-bg);border-top:0.5px solid var(--nav-border);display:flex;align-items:stretch;justify-content:space-around;z-index:500;padding-bottom:env(safe-area-inset-bottom);}
 .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;border:none;background:transparent;cursor:pointer;color:#999;font-family:inherit;gap:3px;padding:6px 0;transition:color 0.15s;}
-.nav-btn.active{color:#1D9E75;}
+.nav-btn.active{color:var(--accent);}
 .nav-icon{font-size:22px;line-height:1;}
 .nav-lbl{font-size:10px;font-weight:600;letter-spacing:0.02em;}
-.add-icon{width:38px;height:38px;background:#1D9E75;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:300;line-height:1;margin-bottom:1px;}
-.nav-btn:has(.add-icon){color:#1D9E75;}
+.add-icon{width:38px;height:38px;background:var(--accent);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:300;line-height:1;margin-bottom:1px;}
+.nav-btn:has(.add-icon){color:var(--accent);}
 /* cards */
-.card{background:#fff;border:0.5px solid rgba(0,0,0,0.1);border-radius:12px;padding:1.25rem;margin-bottom:0.875rem;}
+.card{background:var(--bg-card);border:0.5px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:0.875rem;}
 /* buttons */
 .btn{padding:8px 16px;border-radius:8px;border:0.5px solid rgba(0,0,0,0.18);background:transparent;font-size:14px;cursor:pointer;color:#1a1a1a;transition:all 0.15s;font-family:inherit;font-weight:500;}
 .btn:hover{background:#f0f0f0;}
 .btn:disabled{opacity:0.45;cursor:not-allowed;}
 .btn:active{transform:scale(0.98);}
-.btn-primary{background:#1D9E75;color:#fff;border-color:#1D9E75;}
-.btn-primary:hover:not(:disabled){background:#0F6E56;}
+.btn-primary{background:var(--accent);color:#fff;border-color:var(--accent);}
+.btn-primary:hover:not(:disabled){background:var(--accent-dark);}
 .btn-sm{padding:5px 10px;font-size:12px;}
 .btn-xs{padding:3px 8px;font-size:11px;}
 .btn-danger{border-color:#E24B4A;color:#A32D2D;}
@@ -61,7 +171,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 /* forms */
 input[type="text"],input[type="url"],input[type="number"],input[type="password"],textarea,select{width:100%;padding:9px 12px;border-radius:8px;border:0.5px solid rgba(0,0,0,0.18);background:#fff;color:#1a1a1a;font-size:14px;font-family:inherit;}
 textarea{resize:vertical;min-height:80px;line-height:1.5;}
-input:focus,textarea:focus,select:focus{outline:none;border-color:#1D9E75;box-shadow:0 0 0 2px rgba(29,158,117,0.15);}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px rgba(0,0,0,0.08);}
 .lbl{font-size:12px;color:#555;margin-bottom:4px;display:block;}
 .form-row{display:flex;gap:8px;}
 .form-row>*{flex:1;min-width:0;}
@@ -76,15 +186,15 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:#1D9E75;box-sh
 .badge-gray{background:#F1EFE8;color:#5F5E5A;}
 /* portions */
 .portions-ctrl{display:flex;align-items:center;gap:8px;margin-top:8px;}
-.portions-ctrl>span{font-size:13px;color:#666;}
-.p-btn{width:28px;height:28px;border-radius:7px;border:0.5px solid rgba(0,0,0,0.18);background:transparent;font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#1a1a1a;font-family:inherit;line-height:1;}
-.p-btn:hover{background:#f0f0f0;}
+.portions-ctrl>span{font-size:13px;color:var(--text-secondary);}
+.p-btn{width:28px;height:28px;border-radius:7px;border:0.5px solid var(--border-strong);background:var(--bg-card);font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-primary);font-family:inherit;line-height:1;}
+.p-btn:hover{background:var(--stat-bg);}
 .p-num{font-size:15px;font-weight:600;min-width:22px;text-align:center;}
 /* meal cards */
-.meal-card{background:#fff;border:0.5px solid rgba(0,0,0,0.1);border-radius:10px;padding:1rem;margin-bottom:10px;transition:border-color 0.15s,background 0.15s;}
-.meal-card.selected{border-color:#1D9E75;background:#f0fdf8;}
+.meal-card{background:var(--bg-card);border:0.5px solid var(--border);border-radius:10px;padding:1rem;margin-bottom:10px;transition:border-color 0.15s,background 0.15s;}
+.meal-card.selected{border-color:var(--accent);background:var(--selected-bg);}
 .meal-header{display:flex;align-items:flex-start;gap:10px;}
-.meal-check{width:20px;height:20px;accent-color:#1D9E75;flex-shrink:0;margin-top:2px;cursor:pointer;}
+.meal-check{width:20px;height:20px;accent-color:var(--accent);flex-shrink:0;margin-top:2px;cursor:pointer;}
 .meal-info{flex:1;min-width:0;}
 .meal-title{font-size:15px;font-weight:600;color:#1a1a1a;}
 .meal-meta{font-size:12px;color:#666;margin-top:3px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
@@ -95,17 +205,17 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:#1D9E75;box-sh
 .ing-list{margin-top:10px;padding-top:10px;border-top:0.5px solid rgba(0,0,0,0.07);}
 .ing-item{display:flex;align-items:center;gap:8px;padding:4px 0;font-size:13px;border-bottom:0.5px solid rgba(0,0,0,0.04);}
 .ing-item:last-child{border-bottom:none;}
-.ing-dot{width:5px;height:5px;border-radius:50%;background:#1D9E75;flex-shrink:0;}
+.ing-dot{width:5px;height:5px;border-radius:50%;background:var(--accent);flex-shrink:0;}
 .ing-item.have-it{opacity:0.4;}
 .ing-item.have-it .ing-name{text-decoration:line-through;}
 .have-check{width:15px;height:15px;accent-color:#999;cursor:pointer;margin-left:auto;flex-shrink:0;}
 .ing-price-tag{font-size:11px;color:#3B6D11;background:#EAF3DE;padding:1px 5px;border-radius:4px;white-space:nowrap;}
 /* shop items */
-.shop-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;margin-bottom:4px;background:#fff;border:0.5px solid rgba(0,0,0,0.09);}
+.shop-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;margin-bottom:4px;background:var(--bg-card);border:0.5px solid var(--border);}
 .shop-item.ticked{opacity:0.4;}
 .shop-item.ticked .shop-name{text-decoration:line-through;}
-.shop-item.have-it-item{background:#f9f9f9;border-style:dashed;opacity:0.5;}
-.shop-check{width:18px;height:18px;accent-color:#1D9E75;cursor:pointer;flex-shrink:0;}
+.shop-item.have-it-item{background:var(--stat-bg);border-style:dashed;opacity:0.6;}
+.shop-check{width:18px;height:18px;accent-color:var(--accent);cursor:pointer;flex-shrink:0;}
 .shop-name{flex:1;font-size:14px;}
 .shop-qty{font-size:13px;color:#666;white-space:nowrap;}
 .shop-tag{font-size:11px;padding:1px 6px;border-radius:4px;white-space:nowrap;font-weight:500;}
@@ -116,64 +226,64 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:#1D9E75;box-sh
 .note-btn{font-size:11px;padding:2px 6px;border-radius:4px;background:#f0f0f0;color:#666;cursor:pointer;border:none;font-family:inherit;white-space:nowrap;}
 .note-btn:hover{background:#e0e0e0;}
 /* section headers */
-.section-hdr{font-size:11px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:0.06em;margin:1.25rem 0 8px;}
+.section-hdr{font-size:11px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.06em;margin:1.25rem 0 8px;}
 .section-hdr:first-child{margin-top:0;}
 /* stats */
 .stats-row{display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap;}
-.stat-c{flex:1;min-width:65px;background:#f0f0f0;border-radius:8px;padding:10px 12px;}
+.stat-c{flex:1;min-width:65px;background:var(--stat-bg);border-radius:8px;padding:10px 12px;}
 .stat-n{font-size:22px;font-weight:600;}
 .stat-l{font-size:11px;color:#666;margin-top:1px;}
 /* progress */
-.progress-bar{height:4px;background:#e5e5e5;border-radius:4px;margin-bottom:1rem;overflow:hidden;}
-.progress-fill{height:4px;background:#1D9E75;border-radius:4px;transition:width 0.4s ease;}
+.progress-bar{height:4px;background:var(--stat-bg);border-radius:4px;margin-bottom:1rem;overflow:hidden;}
+.progress-fill{height:4px;background:var(--accent);border-radius:4px;transition:width 0.4s ease;}
 /* top bar */
 .top-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.875rem;flex-wrap:wrap;gap:6px;}
 .clear-btn{font-size:12px;color:#A32D2D;background:none;border:none;cursor:pointer;padding:4px 8px;border-radius:6px;font-family:inherit;}
 .clear-btn:hover{background:#FCEBEB;}
 /* week */
-.today-card{border:2px solid #1D9E75;border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.875rem;background:#fff;}
-.tomorrow-card{border:0.5px solid rgba(0,0,0,0.1);border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.875rem;background:#fff;}
-.spot-lbl{font-size:10px;font-weight:700;color:#0F6E56;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:5px;}
+.today-card{border:2px solid var(--accent);border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.875rem;background:var(--bg-card);}
+.tomorrow-card{border:0.5px solid var(--border);border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.875rem;background:var(--bg-card);}
+.spot-lbl{font-size:10px;font-weight:700;color:var(--accent-dark);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:5px;}
 .spot-title{font-size:18px;font-weight:600;}
-.spot-meta{font-size:13px;color:#666;margin-top:3px;}
+.spot-meta{font-size:13px;color:var(--text-secondary);margin-top:3px;}
 .week-row{display:flex;align-items:stretch;gap:10px;margin-bottom:7px;}
 .week-lbl{width:82px;flex-shrink:0;display:flex;flex-direction:column;justify-content:center;}
 .week-day-name{font-size:13px;font-weight:600;}
 .week-day-date{font-size:11px;color:#777;}
-.week-cell{flex:1;min-height:48px;border-radius:8px;border:0.5px dashed rgba(0,0,0,0.18);background:#f5f5f5;display:flex;align-items:center;padding:8px 10px;cursor:pointer;transition:border-color 0.15s;gap:6px;}
-.week-cell:hover{border-color:#1D9E75;}
-.week-cell.has-meal{background:#f0fdf8;border:0.5px solid #9FE1CB;}
-.week-cell.today-cell{border:2px solid #1D9E75;background:#fff;}
-.week-cell.today-cell.has-meal{background:#f0fdf8;}
-.cell-name{font-size:13px;font-weight:600;color:#085041;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.cell-cost{font-size:11px;color:#3B6D11;white-space:nowrap;}
+.week-cell{flex:1;min-height:48px;border-radius:8px;border:0.5px dashed var(--border-strong);background:var(--stat-bg);display:flex;align-items:center;padding:8px 10px;cursor:pointer;transition:border-color 0.15s;gap:6px;}
+.week-cell:hover{border-color:var(--accent);}
+.week-cell.has-meal{background:var(--selected-bg);border:0.5px solid var(--accent-mid);}
+.week-cell.today-cell{border:2px solid var(--accent);background:var(--today-bg);}
+.week-cell.today-cell.has-meal{background:var(--selected-bg);}
+.cell-name{font-size:13px;font-weight:600;color:var(--accent-dark);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+
 .cell-empty{font-size:12px;color:#c0c0c0;}
 .cell-rm{font-size:13px;color:#bbb;background:none;border:none;cursor:pointer;padding:0 2px;line-height:1;flex-shrink:0;}
 .cell-rm:hover{color:#A32D2D;}
-.unassigned-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
-.u-chip{display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:20px;background:#f0f0f0;border:0.5px solid rgba(0,0,0,0.1);font-size:13px;cursor:pointer;transition:all 0.15s;font-weight:500;}
-.u-chip:hover{border-color:#1D9E75;background:#E1F5EE;}
+
+
+
 /* popups */
-.popup-wrap{position:relative;}
-.day-popup{background:#fff;border:0.5px solid rgba(0,0,0,0.15);border-radius:10px;padding:6px;z-index:300;min-width:190px;box-shadow:0 6px 20px rgba(0,0,0,0.14);margin-top:4px;}
-.day-popup button{display:block;width:100%;text-align:left;padding:8px 10px;border:none;background:transparent;border-radius:6px;font-size:13px;cursor:pointer;color:#1a1a1a;font-family:inherit;font-weight:500;}
-.day-popup button:hover{background:#f5f5f5;}
-.day-popup button.already{color:#1D9E75;}
+
+
+
+
+
 /* receipt */
-.receipt-drop{border:2px dashed rgba(0,0,0,0.16);border-radius:12px;padding:2rem 1rem;text-align:center;cursor:pointer;transition:all 0.2s;background:#fafafa;position:relative;overflow:hidden;}
-.receipt-drop:hover,.receipt-drop.dragover{border-color:#1D9E75;background:#f0fdf8;}
-.receipt-drop input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
-.receipt-preview{width:100%;max-height:220px;object-fit:contain;border-radius:8px;margin-top:12px;border:0.5px solid rgba(0,0,0,0.08);display:block;}
-.price-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:0.5px solid rgba(0,0,0,0.05);font-size:13px;flex-wrap:wrap;}
-.price-row:last-child{border-bottom:none;}
-.price-item-name{flex:1;min-width:100px;}
-.price-val{font-weight:600;color:#3B6D11;min-width:42px;text-align:right;}
-.matched-badge{font-size:11px;background:#E1F5EE;color:#0F6E56;padding:2px 7px;border-radius:4px;}
-.unmatched-badge{font-size:11px;background:#F1EFE8;color:#777;padding:2px 7px;border-radius:4px;}
-.meal-cost-row{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-radius:8px;background:#f5f5f5;margin-bottom:6px;}
-.meal-cost-sub{font-size:11px;color:#666;margin-top:2px;}
-.cost-pill{font-size:11px;background:#EAF3DE;color:#3B6D11;padding:2px 8px;border-radius:10px;font-weight:600;}
-.cost-pill.est{background:#FAEEDA;color:#854F0B;}
+
+
+
+
+
+
+
+
+
+
+.meal-cost-row{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-radius:8px;background:var(--stat-bg);margin-bottom:6px;}
+
+
+
 /* alert boxes */
 .alert{border-radius:8px;padding:10px 14px;font-size:13px;margin-bottom:10px;line-height:1.5;}
 .alert-info{background:#E6F1FB;color:#0C447C;}
@@ -182,28 +292,28 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:#1D9E75;box-sh
 .alert-err{background:#FCEBEB;color:#791F1F;}
 /* modal */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:flex-end;justify-content:center;z-index:600;padding:0;}
-.modal{background:#fff;border-radius:16px 16px 0 0;padding:1.5rem;width:100%;max-width:680px;max-height:88vh;overflow-y:auto;}
+.modal{background:var(--bg-card);border-radius:16px 16px 0 0;padding:1.5rem;width:100%;max-width:680px;max-height:88vh;overflow-y:auto;}
 @media(min-width:500px){.modal-overlay{align-items:center;padding:1rem;}.modal{border-radius:16px;}}
 .modal h2{font-size:17px;font-weight:600;margin-bottom:1rem;}
 .modal-actions{display:flex;gap:8px;margin-top:1rem;justify-content:flex-end;flex-wrap:wrap;}
 /* steps */
 .steps-list{margin-top:10px;padding-top:10px;border-top:0.5px solid rgba(0,0,0,0.07);}
-.step-item{display:flex;gap:10px;padding:6px 0;font-size:13px;color:#333;line-height:1.5;}
-.step-num{width:20px;height:20px;min-width:20px;border-radius:50%;background:#1D9E75;color:#fff;font-size:10px;display:flex;align-items:center;justify-content:center;font-weight:700;margin-top:1px;}
+.step-item{display:flex;gap:10px;padding:6px 0;font-size:13px;color:var(--text-primary);line-height:1.5;}
+.step-num{width:20px;height:20px;min-width:20px;border-radius:50%;background:var(--accent);color:#fff;font-size:10px;display:flex;align-items:center;justify-content:center;font-weight:700;margin-top:1px;}
 /* note bubbles */
 .note-bubble{background:#FAEEDA;color:#633806;border-radius:8px;padding:8px 10px;font-size:13px;margin-top:8px;line-height:1.5;}
 .shop-note-line{font-size:12px;color:#185FA5;background:#E6F1FB;border-radius:6px;padding:4px 8px;margin-top:3px;margin-bottom:6px;margin-left:28px;display:flex;justify-content:space-between;gap:6px;}
 /* diet tags */
 .diet-tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:5px;}
 /* portions preview */
-.portions-preview{background:#f5f5f5;border-radius:8px;padding:10px 12px;margin-top:10px;font-size:12px;color:#666;line-height:1.6;}
+.portions-preview{background:var(--stat-bg);border-radius:8px;padding:10px 12px;margin-top:10px;font-size:12px;color:var(--text-secondary);line-height:1.6;}
 /* filter chips */
 .filter-bar{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;}
-.filter-chip{padding:5px 12px;border-radius:16px;border:0.5px solid rgba(0,0,0,0.14);background:transparent;font-size:12px;cursor:pointer;color:#666;font-family:inherit;transition:all 0.15s;font-weight:500;}
-.filter-chip.active{background:#1D9E75;color:#fff;border-color:#1D9E75;}
+.filter-chip{padding:5px 12px;border-radius:16px;border:0.5px solid var(--border);background:transparent;font-size:12px;cursor:pointer;color:var(--text-secondary);font-family:inherit;transition:all 0.15s;font-weight:500;}
+.filter-chip.active{background:var(--accent);color:#fff;border-color:var(--accent);}
 /* loading dots */
 .ldots{display:inline-flex;gap:4px;vertical-align:middle;}
-.ldots span{width:5px;height:5px;border-radius:50%;background:#1D9E75;animation:ldot 1.2s infinite;display:inline-block;}
+.ldots span{width:5px;height:5px;border-radius:50%;background:var(--accent);animation:ldot 1.2s infinite;display:inline-block;}
 .ldots span:nth-child(2){animation-delay:0.2s;}
 .ldots span:nth-child(3){animation-delay:0.4s;}
 @keyframes ldot{0%,80%,100%{transform:scale(0.6)}40%{transform:scale(1)}}
@@ -211,12 +321,12 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:#1D9E75;box-sh
 .settings-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:0.5px solid rgba(0,0,0,0.07);}
 .settings-row:last-child{border-bottom:none;}
 .settings-lbl{font-size:14px;font-weight:500;}
-.settings-sub{font-size:12px;color:#666;margin-top:2px;}
+.settings-sub{font-size:12px;color:var(--text-secondary);margin-top:2px;}
 /* misc */
 .divider{height:0.5px;background:rgba(0,0,0,0.08);margin:1rem 0;}
-.ai-dot{width:7px;height:7px;border-radius:50%;background:#1D9E75;display:inline-block;flex-shrink:0;}
-.scan-hist-item{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;border-radius:8px;border:0.5px solid rgba(0,0,0,0.09);margin-bottom:6px;font-size:13px;}
-.week-cost-total{text-align:right;font-size:13px;color:#3B6D11;margin-bottom:1rem;}
+.ai-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);display:inline-block;flex-shrink:0;}
+
+
 @media(max-width:480px){.form-row{flex-direction:column;}.week-lbl{width:58px;}}
 </style>
 </head>
@@ -284,6 +394,9 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:#1D9E75;box-sh
       <button class="nav-btn" id="nav-add" onclick="switchTab('add')">
         <span class="nav-icon add-icon">+</span><span class="nav-lbl">Add</span>
       </button>
+      <button class="nav-btn" id="nav-freezer" onclick="switchTab('freezer')">
+        <span class="nav-icon">❄️</span><span class="nav-lbl">Freezer</span>
+      </button>
       <button class="nav-btn" id="nav-settings" onclick="switchTab('settings')">
         <span class="nav-icon">⚙️</span><span class="nav-lbl">Settings</span>
       </button>
@@ -292,6 +405,7 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:#1D9E75;box-sh
     <div id="tab-meals" style="display:none"></div>
     <div id="tab-shopping" style="display:none"></div>
     <div id="tab-add" style="display:none"></div>
+    <div id="tab-freezer" style="display:none"></div>
     <div id="tab-settings" style="display:none"></div>
   </div>
 </div>
@@ -317,7 +431,7 @@ let unsubscribe = null;
 let config = null;
 let state = {
   meals:[], checkedItems:{}, weekPlan:{}, staples:[], extras:[],
-  haveItems:{}, shopNotes:{}, pricebook:{}, receiptScans:[], dayNotes:{}, defaultCooks:{}, lastUpdated:0
+  haveItems:{}, shopNotes:{}, pricebook:{}, receiptScans:[], dayNotes:{}, defaultCooks:{}, freezer:[], lastUpdated:0
 };
 let localLastUpdated = 0;
 let currentTab = 'week';
@@ -325,12 +439,28 @@ let expanded = {};
 let mealFilter = 'all';
 let mealSearch = '';
 let formCS = 4;
-let receiptImageData = null;
-let receiptMediaType = 'image/jpeg';
-let scanResults = null;
 let isSaving = false;
 let suppressRender = false;
 let renderDebounceTimer = null;
+
+// ── THEME SYSTEM (localStorage per device) ─────────────────────────────────
+const THEME_KEY = 'mealplanner-theme-v1';
+function loadTheme() {
+  const saved = JSON.parse(localStorage.getItem(THEME_KEY)||'{}');
+  applyTheme(saved.scheme||'green', saved.dark||false);
+}
+function applyTheme(scheme, dark) {
+  document.body.className = '';
+  if(scheme && scheme !== 'green') document.body.classList.add('theme-'+scheme);
+  if(dark) document.body.classList.add('dark');
+  const metaTheme = document.querySelector('meta[name="theme-color"]');
+  const colours = {green:'#1D9E75',terra:'#D85A30',navy:'#185FA5',purple:'#534AB7'};
+  if(metaTheme) metaTheme.content = dark ? '#111' : (colours[scheme]||colours.green);
+  localStorage.setItem(THEME_KEY, JSON.stringify({scheme, dark}));
+}
+function getCurrentTheme() {
+  return JSON.parse(localStorage.getItem(THEME_KEY)||'{}');
+}
 
 // ── Boot ───────────────────────────────────────────────────────────────────
 const DEFAULT_CONFIG = {
@@ -344,6 +474,8 @@ const DEFAULT_CONFIG = {
 };
 
 function boot() {
+  loadTheme();
+  bootNotifications();
   const saved = localStorage.getItem(LOCAL_KEY);
   if (saved) {
     try { config = JSON.parse(saved); } catch(e) {}
@@ -440,7 +572,15 @@ function startSync() {
       pushState();
     }
     setSyncStatus('live');
-    if(!suppressRender) renderAll();
+    if(!suppressRender) {
+      if(snap.exists()) {
+        const remote = snap.data();
+        if(remote.lastUpdated && remote.lastUpdated > localLastUpdated + 2000) {
+          showToast('🔄 Updated by your partner');
+        }
+      }
+      renderAll();
+    }
   }, (err) => {
     setSyncStatus('error');
     console.error('Firestore error:', err);
@@ -461,6 +601,7 @@ function mergeState(local, remote) {
     receiptScans: remote.receiptScans || [],
     dayNotes: remote.dayNotes || {},
     defaultCooks: remote.defaultCooks || {},
+    freezer: remote.freezer || [],
     lastUpdated: remote.lastUpdated || 0
   };
   return s;
@@ -542,7 +683,6 @@ function tomorrowKey(){ const t=new Date(); t.setDate(t.getDate()+1); return dk(
 function isToday(d){ return dk(d)===todayKey(); }
 function isTomorrow(d){ return dk(d)===tomorrowKey(); }
 function getMeal(id){ return state.meals.find(m=>m.id===id); }
-function formatCost(cost,cs,os){ return '£'+(cost*(cs/os)).toFixed(2); }
 
 // ── Render ─────────────────────────────────────────────────────────────────
 function renderAll() {
@@ -550,12 +690,15 @@ function renderAll() {
   else if(currentTab==='meals') renderMeals();
   else if(currentTab==='shopping') renderShopping();
   else if(currentTab==='add') renderAdd();
+  else if(currentTab==='freezer') renderFreezer();
   else if(currentTab==='settings') renderSettings();
 }
 
 window.switchTab = function(tab) {
+  if(tab !== 'meals') mealSearch = '';
+  if(tab !== 'add') { ingRows = []; addTabInitialised = false; }
   currentTab = tab;
-  const names = ['week','meals','shopping','add','settings'];
+  const names = ['week','meals','shopping','add','freezer','settings'];
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   const activeBtn = document.getElementById('nav-'+tab);
   if(activeBtn) activeBtn.classList.add('active');
@@ -574,31 +717,29 @@ function renderWeek() {
   let h = '';
 
   // New week button
-  const allDaysOld = dates.every(d=>{ const k=dk(d); return !state.weekPlan[k] || new Date(k) < new Date(todayKey()); });
-  h += `<div style="display:flex;justify-content:flex-end;margin-bottom:8px;">
-    <button class="btn btn-sm" onclick="newWeek()" style="font-size:12px;color:#185FA5;border-color:#185FA5;">🔄 Clear future meals</button>
-  </div>`;
+  const hasFutureMeals = dates.slice(2).some(d=>state.weekPlan[dk(d)]);
+  if(hasFutureMeals) h += `<div style="display:flex;justify-content:flex-end;margin-bottom:8px;"><button class="btn btn-sm" onclick="newWeek()" style="font-size:12px;color:#185FA5;border-color:#185FA5;">🔄 Clear future meals</button></div>`;
 
   // Tonight
   h += `<div class="today-card"><div class="spot-lbl">Tonight</div>
     ${tM ? `<div class="spot-title">${tM.starred?'★ ':''}${tM.title}</div>
       <div class="spot-meta">${tM.cookTime?'⏱ '+tM.cookTime+' · ':''}👤 ${tM.currentServings||tM.servings} portions</div>
-      ${state.dayNotes&&state.dayNotes[tk+'-cook']?`<div style="margin-top:6px;"><span style="font-size:12px;background:#E1F5EE;color:#0F6E56;padding:3px 10px;border-radius:20px;font-weight:600;">🧑‍🍳 ${state.dayNotes[tk+'-cook']==='Both'?'Both are cooking':state.dayNotes[tk+'-cook']+' is cooking'}</span></div>`:''}
+      ${state.dayNotes&&state.dayNotes[tk+'-cook']?`<div style="margin-top:6px;"><span style="font-size:12px;background:var(--accent-light);color:var(--accent-dark);padding:3px 10px;border-radius:20px;font-weight:600;">🧑‍🍳 ${state.dayNotes[tk+'-cook']==='Both'?'Both are cooking':state.dayNotes[tk+'-cook']+' is cooking'}</span></div>`:''}
       <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
         <button class="btn btn-primary btn-sm" onclick="switchTab('shopping')">View ingredients</button>
         <button class="btn btn-sm" onclick="openMealDetail('${tM.id}')">Steps & notes</button>
         <button class="btn btn-sm btn-danger" onclick="removeDayMeal('${tk}')">Remove</button>
       </div>`
-    : `<div style="color:#888;font-size:14px;margin-bottom:10px;">No meal planned for tonight.</div>${renderInlinePicker(tk)}`}
+    : `<div style="font-size:14px;color:var(--text-secondary);margin-bottom:10px;">No meal planned for tonight.</div>${renderInlinePicker(tk)}`}
   </div>`;
 
   // Tomorrow
   h += `<div class="tomorrow-card"><div class="spot-lbl" style="color:#185FA5;">Tomorrow</div>
     ${tmM ? `<div class="spot-title">${tmM.title}</div>
       <div class="spot-meta">${tmM.cookTime?'⏱ '+tmM.cookTime+' · ':''}👤 ${tmM.currentServings||tmM.servings} portions</div>
-      ${state.dayNotes&&state.dayNotes[tmk+'-cook']?`<div style="margin-top:6px;"><span style="font-size:12px;background:#E6F1FB;color:#185FA5;padding:3px 10px;border-radius:20px;font-weight:600;">🧑‍🍳 ${state.dayNotes[tmk+'-cook']==='Both'?'Both are cooking':state.dayNotes[tmk+'-cook']+' is cooking'}</span></div>`:''}
+      ${state.dayNotes&&state.dayNotes[tmk+'-cook']?`<div style="margin-top:6px;"><span style="font-size:12px;background:var(--accent-light);color:var(--accent-dark);padding:3px 10px;border-radius:20px;font-weight:600;">🧑‍🍳 ${state.dayNotes[tmk+'-cook']==='Both'?'Both are cooking':state.dayNotes[tmk+'-cook']+' is cooking'}</span></div>`:''}
       <button class="btn btn-sm btn-danger" style="margin-top:8px;" onclick="removeDayMeal('${tmk}')">Remove</button>`
-    : `<div style="color:#888;font-size:14px;margin-bottom:10px;">No meal planned for tomorrow.</div>${renderInlinePicker(tmk)}`}
+    : `<div style="font-size:14px;color:var(--text-secondary);margin-bottom:10px;">No meal planned for tomorrow.</div>${renderInlinePicker(tmk)}`}
   </div>`;
 
   // Week grid - inline dropdown per day
@@ -614,33 +755,35 @@ function renderWeek() {
     const isT=isToday(d), isTom=isTomorrow(d);
     const dayLabel = isT?'Today':isTom?'Tomorrow':SHORT[d.getDay()];
     const dateLabel = d.toLocaleDateString('en-GB',{day:'numeric',month:'short'});
-    h += `<div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:12px;">
-      <div class="week-lbl" style="padding-top:8px;">
-        <div class="week-day-name" style="${isT?'color:#1D9E75;font-weight:700;':''}">${dayLabel}</div>
+    const cookVal = state.dayNotes&&state.dayNotes[key+'-cook'];
+    const dayNote = state.dayNotes&&state.dayNotes[key];
+    h += `<div class="week-row" style="margin-bottom:10px;">
+      <div class="week-lbl">
+        <div class="week-day-name" style="${isT?'color:var(--accent);font-weight:700;':''}">${dayLabel}</div>
         <div class="week-day-date">${dateLabel}</div>
       </div>
       <div style="flex:1;min-width:0;">
-        ${meal?`<div class="week-cell has-meal ${isT?'today-cell':''}" style="margin-bottom:6px;pointer-events:none;">
+        ${meal?`<div class="week-cell has-meal ${isT?'today-cell':''}" style="margin-bottom:5px;">
           <span class="cell-name">${meal.starred?'★ ':''}${meal.title}</span>
           <span style="display:flex;align-items:center;gap:4px;flex-shrink:0;">
-            ${(state.dayNotes&&state.dayNotes[key+'-cook'])?`<span style="font-size:11px;color:#0F6E56;font-weight:600;">🧑‍🍳 ${state.dayNotes[key+'-cook']}</span>`:''}
-            
-            <button class="cell-rm" style="pointer-events:all;" onclick="removeDayMeal('${key}')">✕</button>
+            ${cookVal?`<span style="font-size:10px;color:var(--accent-dark);font-weight:600;">🧑‍🍳 ${cookVal}</span>`:''}
+            <button class="cell-rm" onclick="removeDayMeal('${key}')">✕</button>
           </span>
         </div>`:''}
+        ${dayNote&&meal?`<div style="font-size:10px;color:var(--text-secondary);padding:2px 0 4px 2px;">📝 ${dayNote}</div>`:''}
         ${!meal?(state.meals.length?`<div style="margin-bottom:5px;">
-          <select style="width:100%;font-size:13px;padding:7px 8px;border-radius:8px;border:0.5px solid rgba(0,0,0,0.18);" onchange="if(this.value)doAssignMeal('${key}',this.value)">
+          <select style="width:100%;font-size:13px;padding:7px 8px;border-radius:8px;border:0.5px solid var(--border);background:var(--bg-input);color:var(--text-primary);" onchange="if(this.value)doAssignMeal('${key}',this.value)">
             <option value="">— pick a meal —</option>
             ${mealOpts}
           </select>
-        </div>`:`<div style="font-size:13px;color:#aaa;margin-bottom:5px;">Add meals in + Add tab first</div>`):''}
-        ${(state.dayNotes&&state.dayNotes[key+'-cook'])?
+        </div>`:`<div style="font-size:13px;color:var(--text-hint);margin-bottom:5px;">Add meals in the + Add tab first</div>`):''}
+        ${cookVal?
           `<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px;">
-            <span style="font-size:13px;background:#E1F5EE;color:#0F6E56;padding:4px 10px;border-radius:20px;font-weight:600;">🧑‍🍳 ${state.dayNotes[key+'-cook']==="Both"?"Both are cooking":state.dayNotes[key+'-cook']+' is cooking'}</span>
-            <button onclick="saveDayCook('${key}','')" style="background:none;border:none;cursor:pointer;color:#bbb;font-size:16px;line-height:1;padding:0 4px;">✕</button>
-          </div>` :
+            <span style="font-size:12px;background:var(--accent-light);color:var(--accent-dark);padding:3px 10px;border-radius:20px;font-weight:600;">🧑‍🍳 ${cookVal==="Both"?"Both are cooking":cookVal+' is cooking'}</span>
+            <button onclick="saveDayCook('${key}','')" style="background:none;border:none;cursor:pointer;color:#bbb;font-size:16px;line-height:1;padding:0 2px;">✕</button>
+          </div>`:
           `<div style="margin-bottom:5px;">
-            <select style="width:100%;font-size:12px;padding:5px 8px;border-radius:7px;border:0.5px solid rgba(0,0,0,0.14);background:#fafaf8;color:#555;" onchange="if(this.value)saveDayCook('${key}',this.value)">
+            <select style="width:100%;font-size:12px;padding:5px 8px;border-radius:7px;border:0.5px solid var(--border);background:var(--bg-input);color:var(--text-primary);" onchange="if(this.value)saveDayCook('${key}',this.value)">
               <option value="">👨‍🍳 Who's cooking?</option>
               <option value="Seb" ${(state.defaultCooks&&state.defaultCooks[new Date(key).getDay()])==='Seb'?'selected':''}>🧑‍🍳 Seb</option>
               <option value="Vick" ${(state.defaultCooks&&state.defaultCooks[new Date(key).getDay()])==='Vick'?'selected':''}>🧑‍🍳 Vick</option>
@@ -648,7 +791,7 @@ function renderWeek() {
             </select>
           </div>`}
         <input type="text" placeholder="Add a note for this day…" value="${(state.dayNotes&&state.dayNotes[key])||''}"
-          style="width:100%;font-size:12px;padding:5px 8px;border-radius:7px;border:0.5px solid rgba(0,0,0,0.14);background:#fafaf8;color:#555;"
+          style="width:100%;font-size:12px;padding:5px 8px;border-radius:7px;border:0.5px solid var(--border);background:var(--bg-input);color:var(--text-primary);"
           onchange="saveDayNote('${key}',this.value)"/>
       </div>
     </div>`;
@@ -665,7 +808,7 @@ function renderInlinePicker(key) {
       <option value="">— pick a meal —</option>
       ${opts}
     </select>
-    <select style="width:100%;font-size:12px;padding:5px 8px;border-radius:7px;border:0.5px solid rgba(0,0,0,0.14);background:#fafaf8;color:#555;" onchange="if(this.value)saveDayCook('${key}',this.value)">
+    <select style="width:100%;font-size:12px;padding:5px 8px;border-radius:7px;border:0.5px solid var(--border);background:var(--bg-input);color:var(--text-primary);" onchange="if(this.value)saveDayCook('${key}',this.value)">
       <option value="">👨‍🍳 Who's cooking?</option>
       <option value="Seb">🧑‍🍳 Seb</option>
       <option value="Vick">🧑‍🍳 Vick</option>
@@ -737,25 +880,26 @@ function renderMeals() {
     const isExp = expanded[meal.id], cs=meal.currentServings||meal.servings, sf=cs/meal.servings;
     const assignedDays = Object.entries(state.weekPlan||{}).filter(([,id])=>id===meal.id).map(([k])=>{ const d=new Date(k); return isToday(d)?'Tonight':isTomorrow(d)?'Tomorrow':SHORT[d.getDay()]; });
     h += `<div class="meal-card ${meal.selected?'selected':''}">
-      <div class="meal-header">
-        <button onclick="toggleMeal('${meal.id}',${!meal.selected})" style="background:${meal.selected?'#1D9E75':'transparent'};border:1.5px solid ${meal.selected?'#1D9E75':'rgba(0,0,0,0.2)'};border-radius:8px;padding:4px 8px;font-size:11px;font-weight:600;cursor:pointer;color:${meal.selected?'#fff':'#888'};white-space:nowrap;flex-shrink:0;font-family:inherit;transition:all 0.15s;">${meal.selected?'🛒 On list':'+ Shop'}</button>
+      ${meal.imageUrl?`<div style="width:100%;height:140px;border-radius:8px;overflow:hidden;margin-bottom:10px;"><img src="${meal.imageUrl}" alt="${meal.title}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.style.display='none'"/></div>`:''}
+    <div class="meal-header">
+        <button onclick="toggleMeal('${meal.id}',${!meal.selected})" style="background:${meal.selected?'var(--accent)':'transparent'};border:1.5px solid ${meal.selected?'var(--accent)':'var(--border-strong)'};border-radius:8px;padding:4px 8px;font-size:11px;font-weight:600;cursor:pointer;color:${meal.selected?'#fff':'var(--text-hint)'};white-space:nowrap;flex-shrink:0;font-family:inherit;transition:all 0.15s;">${meal.selected?'🛒 On list':'+ Shop'}</button>
         <div class="meal-info">
           <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
-            <span class="meal-title">${meal.starred?'★ ':''}${meal.title}</span>
+            <span class="meal-title" style="font-size:16px;font-weight:700;">${meal.starred?'★ ':''}${meal.title}</span>
             
           </div>
-          <div class="meal-meta">${meal.cookTime?`<span>⏱ ${meal.cookTime}</span>`:''}<span>${meal.servings} servings</span>${assignedDays.map(d=>`<span class="badge badge-blue">${d}</span>`).join('')}</div>
-          ${meal.description?`<div style="font-size:13px;color:#666;margin-top:3px;">${meal.description}</div>`:''}
+          <div class="meal-meta">${meal.cookTime?`<span style="font-weight:600;color:var(--accent);">⏱ ${meal.cookTime}</span>`:''}<span style="color:var(--text-secondary);">👤 ${meal.servings} servings</span>${assignedDays.map(d=>`<span class="badge badge-blue">${d}</span>`).join('')}</div>
+          ${meal.description?`<div style="font-size:13px;color:var(--text-secondary);margin-top:3px;">${meal.description}</div>`:''}
           ${(meal.dietTags||[]).length?`<div class="diet-tags">${meal.dietTags.map(t=>`<span class="badge ${DIET_COLORS[t]||'badge-green'} diet-tag">${t}</span>`).join('')}</div>`:''}
         </div>
         <div class="meal-side">
           <button class="star-btn ${meal.starred?'on':''}" onclick="toggleStar('${meal.id}')">★</button>
-          <div style="display:flex;gap:1px;margin-top:3px;">${[1,2,3,4,5].map(n=>`<button onclick="rateMeal('${meal.id}',${n})" style="background:none;border:none;cursor:pointer;font-size:14px;padding:0;line-height:1;color:${(meal.rating||0)>=n?'#F0A500':'#ddd'};">★</button>`).join('')}</div>
+          <div style="display:flex;gap:1px;margin-top:3px;">${[1,2,3,4,5].map(n=>`<button onclick="rateMeal('${meal.id}',${n})" style="background:none;border:none;cursor:pointer;font-size:14px;padding:0;line-height:1;color:${(meal.rating||0)>=n?'#F0A500':'var(--border-strong)'};">★</button>`).join('')}</div>
           <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;">
-            <button class="btn btn-xs" onclick="toggleExpand('${meal.id}')">${isExp?'Hide':'View'}</button>
-            <button class="btn btn-xs" onclick="openMealDetail('${meal.id}')">Steps</button>
-            <button class="btn btn-xs" onclick="openEditMeal('${meal.id}')">✏️ Edit</button>
-            <button class="btn btn-xs btn-danger" onclick="deleteMeal('${meal.id}')">✕</button>
+            <button class="btn btn-xs" onclick="toggleExpand('${meal.id}')" title="${isExp?'Hide ingredients':'View ingredients'}">${isExp?'▲':'▼ View'}</button>
+            <button class="btn btn-xs" onclick="openMealDetail('${meal.id}')" title="Steps & notes">📋</button>
+            <button class="btn btn-xs" onclick="openEditMeal('${meal.id}')" title="Edit recipe">✏️</button>
+            <button class="btn btn-xs btn-danger" onclick="deleteMeal('${meal.id}')" title="Delete recipe">✕</button>
           </div>
         </div>
       </div>
@@ -763,7 +907,7 @@ function renderMeals() {
       ${isExp ? `<div class="ing-list">${meal.ingredients.map((ing,idx)=>{
         const s=ing.amount?Math.round(ing.amount*sf*10)/10:null, hk=meal.id+'-have-'+idx, haveIt=!!state.haveItems[hk];
         const pb=state.pricebook?.[ing.name.toLowerCase()], pbS=pb&&ing.amount&&s?pb*(s/ing.amount):pb;
-        return `<div class="ing-item ${haveIt?'have-it':''}"><div class="ing-dot"></div><span class="ing-name">${s?`${s}${ing.unit?' '+ing.unit:''} `:''}${ing.name}</span><button onclick="toggleHave('${hk}',${!haveIt})" style="margin-left:auto;font-size:10px;padding:2px 7px;border-radius:12px;border:1px solid ${haveIt?'#999':'rgba(0,0,0,0.15)'};background:${haveIt?'#e8e8e8':'transparent'};color:${haveIt?'#666':'#aaa'};cursor:pointer;font-family:inherit;flex-shrink:0;white-space:nowrap;">${haveIt?'✓ Have it':'Have it?'}</button></div>`;
+        return `<div class="ing-item ${haveIt?'have-it':''}"><div class="ing-dot"></div><span class="ing-name">${s?`${s}${ing.unit?' '+ing.unit:''} `:''}${ing.name}</span><button onclick="toggleHave('${hk}',${!haveIt})" style="margin-left:auto;font-size:10px;padding:2px 7px;border-radius:12px;border:1px solid ${haveIt?'var(--border-strong)':'var(--border)'};background:${haveIt?'var(--stat-bg)':'transparent'};color:${haveIt?'var(--text-secondary)':'var(--text-hint)'};cursor:pointer;font-family:inherit;flex-shrink:0;white-space:nowrap;">${haveIt?'✓ Have it':'Have it?'}</button></div>`;
       }).join('')}</div>${meal.notes?`<div class="note-bubble">📝 ${meal.notes}</div>`:''}`:''}
     </div>`;
   });
@@ -786,18 +930,18 @@ window.saveDayNote = function(key,val) {
   renderDebounceTimer = setTimeout(()=>pushState(), 800);
 };
 window.saveDayCook = async function(key,val) { if(!state.dayNotes) state.dayNotes={}; state.dayNotes[key+'-cook']=val; renderWeek(); pushState(); };
-window.toggleHave = async function(key,checked) { state.haveItems[key]=!!checked; renderMeals(); renderShopping(); pushState(); };
+window.toggleHave = async function(key,checked) { haptic(8); state.haveItems[key]=!!checked; renderMeals(); renderShopping(); pushState(); };
 
 window.openMealDetail = function(id) {
   const meal=getMeal(id); if(!meal) return;
   const cs=meal.currentServings||meal.servings, sf=cs/meal.servings;
   document.getElementById('modal-container').innerHTML=`<div class="modal-overlay" onclick="closeModal(event,this)"><div class="modal">
     <h2>${meal.starred?'★ ':''}${meal.title}</h2>
-    <div style="font-size:13px;color:#666;margin-bottom:14px;">${meal.cookTime?'⏱ '+meal.cookTime+' · ':''}👤 ${cs} portions</div>
+    <div style="font-size:13px;color:var(--text-secondary);margin-bottom:14px;">${meal.cookTime?'⏱ '+meal.cookTime+' · ':''}👤 ${cs} portions</div>
     <div style="font-size:13px;font-weight:600;margin-bottom:6px;">Ingredients</div>
-    <div style="font-size:13px;color:#444;margin-bottom:14px;line-height:1.7;">${meal.ingredients.map(ing=>{const s=ing.amount?Math.round(ing.amount*sf*10)/10:null;return(s?s+' ':' ')+(ing.unit?ing.unit+' ':'')+ing.name;}).join(' · ')}</div>
+    <div style="font-size:13px;color:var(--text-primary);margin-bottom:14px;line-height:1.7;">${meal.ingredients.map(ing=>{const s=ing.amount?Math.round(ing.amount*sf*10)/10:null;return(s?s+' ':' ')+(ing.unit?ing.unit+' ':'')+ing.name;}).join(' · ')}</div>
     <div style="font-size:13px;font-weight:600;margin-bottom:6px;">Method</div>
-    ${(meal.steps||[]).length?`<div class="steps-list">${meal.steps.map((s,i)=>`<div class="step-item"><div class="step-num">${i+1}</div><div>${s}</div></div>`).join('')}</div>`:`<div style="font-size:13px;color:#888;">No steps saved for this recipe.</div>`}
+    ${(meal.steps||[]).length?`<div class="steps-list">${meal.steps.map((s,i)=>`<div class="step-item"><div class="step-num">${i+1}</div><div>${s}</div></div>`).join('')}</div>`:`<div style="font-size:13px;color:var(--text-secondary);">No steps saved for this recipe.</div>`}
     ${meal.notes?`<div class="note-bubble" style="margin-top:12px;">📝 ${meal.notes}</div>`:''}
     ${meal.url?`<div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap;"><button class="btn btn-sm" onclick="copyLink('${meal.url}')">📋 Copy video link</button><button class="btn btn-sm btn-primary" onclick="window.open('${meal.url}','_blank')">Open video ↗</button></div>`:''}
     <div class="modal-actions"><button class="btn" onclick="closeModal()">Close</button></div>
@@ -820,13 +964,14 @@ window.openEditMeal = function(id) {
         <div><div class="lbl">Video link</div><input type="url" id="e-url" value="${escHtml(meal.url||'')}"/></div>
         <div><div class="lbl">Description</div><input type="text" id="e-desc" value="${escHtml(meal.description||'')}"/></div>
       </div>
+      <div><div class="lbl">Meal image URL (optional)</div><input type="url" id="e-img" value="${escHtml(meal.imageUrl||'')}"/></div>
       <div class="form-row">
         <div><div class="lbl">Recipe makes</div><input type="number" id="e-servings" value="${meal.servings||4}" min="1" max="40"/></div>
         <div><div class="lbl">Cook for</div><input type="number" id="e-current-servings" value="${meal.currentServings||meal.servings||4}" min="1" max="40"/></div>
       </div>
       <div>
         <div class="lbl">Dietary tags</div>
-        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;">${DIET_OPTIONS.map(d=>`<label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" id="e-dt-${d.replace(/[^a-z]/gi,'-')}" style="width:auto;accent-color:#1D9E75;" ${(meal.dietTags||[]).includes(d)?'checked':''}/> ${d}</label>`).join('')}</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;">${DIET_OPTIONS.map(d=>`<label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" id="e-dt-${d.replace(/[^a-z]/gi,'-')}" style="width:auto;accent-color:var(--accent);" ${(meal.dietTags||[]).includes(d)?'checked':''}/> ${d}</label>`).join('')}</div>
       </div>
       <div>
         <div class="lbl">Ingredients</div>
@@ -873,6 +1018,7 @@ window.saveEditMeal = async function(id) {
   meal.title = title;
   meal.cookTime = document.getElementById('e-cooktime').value.trim();
   meal.url = document.getElementById('e-url').value.trim();
+  meal.imageUrl = document.getElementById('e-img').value.trim();
   meal.description = document.getElementById('e-desc').value.trim();
   meal.notes = document.getElementById('e-notes').value.trim();
   meal.servings = newServings;
@@ -880,7 +1026,6 @@ window.saveEditMeal = async function(id) {
   meal.dietTags = dietTags;
   meal.ingredients = ingredients;
   meal.steps = stepsText ? stepsText.split('\n').filter(l=>l.trim()) : [];
-  recalcMealCosts();
   await pushState();
   closeModal();
   renderMeals(); renderWeek(); renderShopping();
@@ -911,14 +1056,16 @@ function consolidate(items) {
 
 
 const CATEGORIES = {
-  'Meat & Fish': ['chicken','beef','mince','lamb','pork','bacon','sausage','salmon','tuna','fish','turkey','ham','prawn','cod','haddock'],
-  'Dairy & Eggs': ['milk','cheese','butter','cream','yogurt','egg','cheddar','mozzarella','parmesan','sour cream','double cream'],
-  'Veg & Salad': ['onion','garlic','tomato','pepper','carrot','broccoli','spinach','lettuce','cucumber','courgette','potato','sweet potato','mushroom','celery','leek','cabbage','cauliflower','aubergine'],
-  'Fruit': ['apple','banana','lemon','lime','orange','berry','strawberry','grape','avocado'],
-  'Tins & Jars': ['tin','tinned','jar','passata','chopped tomato','coconut milk','beans','chickpea','lentil','salsa','paste','sauce'],
-  'Dried & Pasta': ['pasta','spaghetti','rice','noodle','flour','bread','cereal','oat','lentil','quinoa','couscous'],
-  'Herbs & Spices': ['salt','pepper','cumin','paprika','oregano','basil','thyme','rosemary','coriander','turmeric','chilli','seasoning','spice','herb','bay'],
-  'Oils & Condiments': ['oil','olive oil','vinegar','soy sauce','ketchup','mustard','mayo','honey','sugar','stock'],
+  'Bakery': ['bread','roll','pitta','naan','wrap','crumpet','bagel','baguette','loaf','croissant'],
+  'Fruit & Veg': ['apple','banana','lemon','lime','orange','berry','strawberry','grape','avocado','onion','garlic','tomato','pepper','carrot','broccoli','spinach','lettuce','cucumber','courgette','potato','sweet potato','mushroom','celery','leek','cabbage','cauliflower','aubergine','ginger','chilli','spring onion','corn','asparagus','pea','bean'],
+  'Meat & Fish': ['chicken','beef','mince','lamb','pork','bacon','sausage','salmon','tuna','fish','turkey','ham','prawn','cod','haddock','steak','duck','chorizo','pancetta'],
+  'Dairy & Eggs': ['milk','cheese','butter','cream','yogurt','egg','cheddar','mozzarella','parmesan','sour cream','double cream','creme fraiche','feta','halloumi'],
+  'Tins & Jars': ['tin','tinned','jar','passata','chopped tomato','coconut milk','beans','chickpea','lentil','salsa','paste','sauce','stock cube','sardine','tuna tin'],
+  'Dried & Pasta': ['pasta','spaghetti','rice','noodle','flour','cereal','oat','quinoa','couscous','lentil','barley','bulgur'],
+  'Herbs & Spices': ['salt','pepper','cumin','paprika','oregano','basil','thyme','rosemary','coriander','turmeric','chilli flake','seasoning','spice','herb','bay','cardamom','cinnamon','nutmeg','clove','star anise'],
+  'Oils & Condiments': ['oil','olive oil','vinegar','soy sauce','ketchup','mustard','mayo','honey','sugar','worcestershire','fish sauce','oyster sauce','tahini','pesto'],
+  'Frozen': ['frozen','ice cream','chips frozen'],
+  'Drinks': ['juice','squash','wine','beer','fizzy','water bottle'],
 };
 
 function getCategory(name) {
@@ -936,13 +1083,13 @@ function renderShopping() {
   const totalTicked=needToBuy.filter(i=>i.keys.some(k=>checked[k])).length+staples.filter(s=>s.ticked).length+extras.filter(e=>e.ticked).length;
   const totalAll=needToBuy.length+staples.length+extras.length;
   const globalNote=state.shopNotes?.['global']||'';
-  let h=`<div class="top-bar"><div><span style="font-size:15px;font-weight:600;">${totalAll} items</span><span style="font-size:13px;color:#888;margin-left:8px;">${totalTicked} ticked off</span></div><button class="clear-btn" onclick="clearAllTicked()">Clear ticked</button></div>
+  let h=`<div class="top-bar"><div><span style="font-size:15px;font-weight:600;">${totalAll} items</span><span style="font-size:13px;color:var(--text-secondary);margin-left:8px;">${totalTicked} ticked off</span></div><div style="display:flex;gap:8px;"><button class="btn-ghost btn" onclick="shareShoppingList()">📤 Share</button><button class="clear-btn" onclick="clearAllTicked()">Clear ticked</button></div></div>
   <div class="progress-bar"><div class="progress-fill" style="width:${totalAll?Math.round(totalTicked/totalAll*100):0}%"></div></div>`;
   if (globalNote) h+=`<div style="font-size:12px;color:#185FA5;background:#E6F1FB;border-radius:6px;padding:6px 10px;margin-bottom:10px;display:flex;justify-content:space-between;">📋 ${globalNote}<button onclick="editShopNote()" style="background:none;border:none;cursor:pointer;font-size:11px;color:#185FA5;font-family:inherit;">Edit</button></div>`;
   else h+=`<div style="margin-bottom:10px;"><button class="btn-ghost btn" onclick="editShopNote()">+ Add shopping note</button></div>`;
 
   h+=`<div class="section-hdr">From recipes</div>`;
-  if(!needToBuy.length&&!haveAlready.length) h+=`<div style="font-size:13px;color:#888;padding:4px 0 10px;">Tick meals in the Meals tab to populate this list.</div>`;
+  if(!needToBuy.length&&!haveAlready.length) h+=`<div style="font-size:13px;color:#888;padding:4px 0 10px;">Tap "+ Shop" on a meal in the Meals tab to add its ingredients here.</div>`;
 
   // Group by category
   const grouped = {};
@@ -978,18 +1125,18 @@ function renderShopping() {
   // Staples
   h+=`<div class="section-hdr">Staples</div><div style="margin-bottom:10px;">`;
   staples.forEach(s=>{ h+=`<div class="shop-item ${s.ticked?'ticked':''}"><input type="checkbox" class="shop-check" ${s.ticked?'checked':''} onchange="tickStaple('${s.id}',this.checked)"/><span class="shop-name">${s.name}</span><span class="shop-qty">${s.qty||''}</span><span class="shop-tag tag-staple">staple</span><button class="clear-btn" style="padding:2px 6px;" onclick="removeStaple('${s.id}')">✕</button></div>`; });
-  h+=`</div><div style="background:#f5f5f5;border-radius:8px;padding:12px;margin-bottom:0.875rem;"><div class="lbl" style="margin-bottom:8px;">Add a staple</div><div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;"><input type="text" id="staple-name" placeholder="e.g. Milk, Bread..." style="flex:2;min-width:120px;"/><input type="number" id="staple-qty" placeholder="Qty" min="0" step="any" style="width:64px;flex-shrink:0;"/><select id="staple-unit" style="width:80px;flex-shrink:0;">${['','g','kg','ml','l','tbsp','tsp','cup','oz','lb','pinch','handful','slice','tin','bunch','clove','sprig'].map(u=>'<option value="'+u+'">'+( u||'—')+'</option>').join('')}</select><button class="btn btn-primary btn-sm" onclick="addStaple()" style="flex-shrink:0;">Add</button></div></div>`;
+  h+=`</div><div style="background:var(--stat-bg);border-radius:8px;padding:12px;margin-bottom:0.875rem;"><div class="lbl" style="margin-bottom:8px;">Add a staple</div><div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;"><input type="text" id="staple-name" placeholder="e.g. Milk, Bread..." style="flex:2;min-width:120px;"/><input type="number" id="staple-qty" placeholder="Qty" min="0" step="any" style="width:64px;flex-shrink:0;"/><select id="staple-unit" style="width:80px;flex-shrink:0;">${['','g','kg','ml','l','tbsp','tsp','cup','oz','lb','pinch','handful','slice','tin','bunch','clove','sprig'].map(u=>'<option value="'+u+'">'+( u||'—')+'</option>').join('')}</select><button class="btn btn-primary btn-sm" onclick="addStaple()" style="flex-shrink:0;">Add</button></div></div>`;
 
   // Extras
   h+=`<div class="section-hdr">Extras / one-offs</div><div style="margin-bottom:10px;">`;
   extras.forEach(e=>{ h+=`<div class="shop-item ${e.ticked?'ticked':''}"><input type="checkbox" class="shop-check" ${e.ticked?'checked':''} onchange="tickExtra('${e.id}',this.checked)"/><span class="shop-name">${e.name}</span><span class="shop-qty">${e.qty||''}</span><span class="shop-tag tag-extra">extra</span><button class="clear-btn" style="padding:2px 6px;" onclick="removeExtra('${e.id}')">✕</button></div>`; });
-  h+=`</div><div style="background:#f5f5f5;border-radius:8px;padding:12px;"><div class="lbl" style="margin-bottom:8px;">Add a one-off item</div><div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;"><input type="text" id="extra-name" placeholder="e.g. Birthday cake..." style="flex:2;min-width:120px;"/><input type="number" id="extra-qty" placeholder="Qty" min="0" step="any" style="width:64px;flex-shrink:0;"/><select id="extra-unit" style="width:80px;flex-shrink:0;">${['','g','kg','ml','l','tbsp','tsp','cup','oz','lb','pinch','handful','slice','tin','bunch','clove','sprig'].map(u=>'<option value="'+u+'">'+( u||'—')+'</option>').join('')}</select><button class="btn btn-primary btn-sm" onclick="addExtra()" style="flex-shrink:0;">Add</button></div></div>`;
+  h+=`</div><div style="background:var(--stat-bg);border-radius:8px;padding:12px;"><div class="lbl" style="margin-bottom:8px;">Add a one-off item</div><div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;"><input type="text" id="extra-name" placeholder="e.g. Birthday cake..." style="flex:2;min-width:120px;"/><input type="number" id="extra-qty" placeholder="Qty" min="0" step="any" style="width:64px;flex-shrink:0;"/><select id="extra-unit" style="width:80px;flex-shrink:0;">${['','g','kg','ml','l','tbsp','tsp','cup','oz','lb','pinch','handful','slice','tin','bunch','clove','sprig'].map(u=>'<option value="'+u+'">'+( u||'—')+'</option>').join('')}</select><button class="btn btn-primary btn-sm" onclick="addExtra()" style="flex-shrink:0;">Add</button></div></div>`;
   el.innerHTML = h;
 }
 
-window.tickRecipe = async function(ks,checked) { const keys=ks.split(','); if(!state.checkedItems)state.checkedItems={}; keys.forEach(k=>state.checkedItems[k]=checked); await pushState(); renderShopping(); };
-window.tickStaple = async function(id,checked) { const s=state.staples.find(x=>x.id===id); if(s){s.ticked=checked; renderShopping(); pushState();} };
-window.tickExtra = async function(id,checked) { const e=state.extras.find(x=>x.id===id); if(e){e.ticked=checked; renderShopping(); pushState();} };
+window.tickRecipe = function(ks,checked) { haptic(8); const keys=ks.split(','); if(!state.checkedItems)state.checkedItems={}; keys.forEach(k=>state.checkedItems[k]=checked); renderShopping(); pushState(); };
+window.tickStaple = async function(id,checked) { haptic(8); const s=state.staples.find(x=>x.id===id); if(s){s.ticked=checked; renderShopping(); pushState();} };
+window.tickExtra = async function(id,checked) { haptic(8); const e=state.extras.find(x=>x.id===id); if(e){e.ticked=checked; renderShopping(); pushState();} };
 window.addStaple = async function() { const n=document.getElementById('staple-name').value.trim(),q=document.getElementById('staple-qty').value.trim(),u=document.getElementById('staple-unit').value; if(!n)return; const qty=(q&&u)?q+' '+u:q||u||''; state.staples.push({id:'s'+Date.now(),name:n,qty,ticked:false}); document.getElementById('staple-name').value=''; document.getElementById('staple-qty').value=''; document.getElementById('staple-unit').value=''; await pushState(); renderShopping(); };
 window.addExtra = async function() { const n=document.getElementById('extra-name').value.trim(),q=document.getElementById('extra-qty').value.trim(),u=document.getElementById('extra-unit').value; if(!n)return; const qty=(q&&u)?q+' '+u:q||u||''; state.extras.push({id:'e'+Date.now(),name:n,qty,ticked:false}); document.getElementById('extra-name').value=''; document.getElementById('extra-qty').value=''; document.getElementById('extra-unit').value=''; await pushState(); renderShopping(); };
 window.removeStaple = async function(id) { state.staples=state.staples.filter(s=>s.id!==id); await pushState(); renderShopping(); };
@@ -1000,38 +1147,14 @@ window.addItemNote = function(key,name) { const cur=state.shopNotes?.[key]||''; 
 window.saveShopNote = async function(val) { if(!state.shopNotes)state.shopNotes={}; state.shopNotes['global']=val.trim(); await pushState(); closeModal(); renderShopping(); };
 window.saveItemNote = async function(key,val) { if(!state.shopNotes)state.shopNotes={}; state.shopNotes[key]=val.trim(); await pushState(); closeModal(); renderShopping(); };
 
-// ── RECEIPT TAB ────────────────────────────────────────────────────────────
-window.applyPrices = async function() {
-  if(!scanResults) return;
-  if(!state.pricebook) state.pricebook={};
-  const matched=scanResults.items.filter(i=>i.matchedIngredient&&i.price>0);
-  matched.forEach(item=>{ state.pricebook[item.matchedIngredient.toLowerCase()]=item.price; });
-  state.receiptScans.push({store:scanResults.store||'Receipt',scannedAt:Date.now(),total:scanResults.total||null,itemCount:matched.length});
-  recalcMealCosts();
-  await pushState();
-  scanResults=null;
-  renderMeals(); renderWeek();
-  showToast(`Applied ${matched.length} prices — meal costs updated!`);
-};
-
-function recalcMealCosts() {
-  if(!state.pricebook||!state.meals) return;
-  state.meals.forEach(meal=>{
-    let total=0,matched=0;
-    meal.ingredients.forEach(ing=>{ const pb=state.pricebook[ing.name.toLowerCase()]; if(pb){total+=pb;matched++;} });
-    if(matched>0){ const cov=matched/meal.ingredients.length; meal.estimatedCost=Math.round((cov<1?total/cov:total)*100)/100; meal.costSource=cov>=0.8?'receipt':'estimated'; }
-  });
-}
-
-window.removePriceEntry = async function(name) { delete state.pricebook[name]; recalcMealCosts(); await pushState(); renderMeals(); };
-window.clearPricebook = async function() { if(!confirm('Clear all scanned prices?')) return; state.pricebook={}; state.meals.forEach(m=>{m.estimatedCost=null;m.costSource=null;}); await pushState(); renderMeals(); renderWeek(); };
+// ── ADD TAB setup ─────────────────────────────────────────────────────────
 
 // ── ADD TAB ────────────────────────────────────────────────────────────────
 function renderAdd() {
   const el = document.getElementById('tab-add'); if(!el) return;
   el.innerHTML=`<div class="card">
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><div class="ai-dot"></div><span style="font-size:14px;font-weight:600;">AI recipe import</span></div>
-    <p style="font-size:13px;color:#666;margin-bottom:12px;line-height:1.5;">Paste a TikTok, Instagram or YouTube link and AI will extract the recipe automatically. Requires an Anthropic API key (set in ⚙️ Settings).</p>
+    <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;line-height:1.5;">Paste a TikTok, Instagram or YouTube link and AI will extract the recipe automatically. Requires an Anthropic API key (set in ⚙️ Settings).</p>
     <div style="display:flex;flex-direction:column;gap:10px;">
       <div class="form-group"><div class="lbl">Video URL</div><input type="url" id="add-url" placeholder="https://www.tiktok.com/@chef/video/..."/></div>
       <div class="form-group"><div class="lbl">Title hint (optional)</div><input type="text" id="add-hint" placeholder="e.g. Chicken tikka masala"/></div>
@@ -1039,19 +1162,20 @@ function renderAdd() {
     </div>
   </div>
   <div class="card">
-    <div style="font-size:14px;font-weight:600;margin-bottom:14px;">Enter recipe manually</div>
+    <div style="font-size:14px;font-weight:600;margin-bottom:14px;color:var(--text-primary);">Enter recipe manually</div>
     <div style="display:flex;flex-direction:column;gap:10px;">
       <div class="form-row"><div class="form-group" style="flex:1"><div class="lbl">Title *</div><input type="text" id="m-title" placeholder="e.g. Spaghetti bolognese"/></div><div class="form-group" style="flex:1"><div class="lbl">Cook time</div><input type="text" id="m-cooktime" placeholder="e.g. 45 mins"/></div></div>
       <div class="form-row"><div class="form-group" style="flex:1"><div class="lbl">Video link (optional)</div><input type="url" id="m-url" placeholder="https://..."/></div><div class="form-group" style="flex:1"><div class="lbl">Description</div><input type="text" id="m-desc" placeholder="Short description..."/></div></div>
-      <div style="background:#f5f5f5;border-radius:10px;padding:12px;">
-        <div style="font-size:13px;font-weight:600;margin-bottom:10px;">Portions</div>
+      <div class="form-group"><div class="lbl">Meal image URL (optional)</div><input type="url" id="m-img" placeholder="https://... paste any image link"/><div style="font-size:11px;color:var(--text-hint);margin-top:3px;">Paste an image URL — right-click any photo online and copy image address</div></div>
+      <div style="background:var(--stat-bg);border-radius:10px;padding:12px;border:0.5px solid var(--border);">
+        <div style="font-size:13px;font-weight:600;margin-bottom:10px;color:var(--text-primary);">Portions</div>
         <div class="form-row">
-          <div><div class="lbl">Recipe makes</div><input type="number" id="m-servings" value="4" min="1" max="40" oninput="updatePreview()"/><div style="font-size:11px;color:#888;margin-top:3px;">Original recipe servings</div></div>
-          <div><div class="lbl">I want to cook for</div><div style="display:flex;align-items:center;gap:8px;margin-top:2px;"><button class="p-btn" onclick="adjFormCS(-1)">−</button><span class="p-num" id="form-cs">4</span><button class="p-btn" onclick="adjFormCS(1)">+</button></div><div style="font-size:11px;color:#888;margin-top:3px;">Ingredients will scale</div></div>
+          <div><div class="lbl">Recipe makes</div><input type="number" id="m-servings" value="4" min="1" max="40" oninput="updatePreview()"/><div style="font-size:11px;color:var(--text-hint);margin-top:3px;">Original recipe servings</div></div>
+          <div><div class="lbl">I want to cook for</div><div style="display:flex;align-items:center;gap:8px;margin-top:2px;"><button class="p-btn" onclick="adjFormCS(-1)">−</button><span class="p-num" id="form-cs">4</span><button class="p-btn" onclick="adjFormCS(1)">+</button></div><div style="font-size:11px;color:var(--text-hint);margin-top:3px;">Ingredients will scale</div></div>
         </div>
         <div id="portions-preview" class="portions-preview" style="margin-top:10px;">Add ingredients below to see a scaled preview.</div>
       </div>
-      <div class="form-group"><div class="lbl">Dietary tags</div><div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;">${DIET_OPTIONS.map(d=>`<label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" id="dt-${d}" style="width:auto;accent-color:#1D9E75;"/> ${d}</label>`).join('')}</div></div>
+      <div class="form-group"><div class="lbl">Dietary tags</div><div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;">${DIET_OPTIONS.map(d=>`<label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" id="dt-${d}" style="width:auto;accent-color:var(--accent);"/> ${d}</label>`).join('')}</div></div>
       <div class="form-group"><div class="lbl">Ingredients</div><div id="ing-list-builder" style="display:flex;flex-direction:column;gap:6px;margin-bottom:8px;"></div><button type="button" class="btn btn-sm" onclick="addIngredientRow()" style="margin-top:2px;">+ Add ingredient</button></div>
       <div class="form-group"><div class="lbl">Method / steps (one per line)</div><textarea id="m-steps" placeholder="Brown the mince in a hot pan.&#10;Add onion and garlic.&#10;Pour in tomatoes and simmer 20 mins." style="min-height:90px;"></textarea></div>
       <div class="form-group"><div class="lbl">Notes & tips</div><input type="text" id="m-notes" placeholder="e.g. Freezes well. Can swap lamb for beef."/></div>
@@ -1059,8 +1183,8 @@ function renderAdd() {
       <button class="btn btn-primary btn-block" onclick="handleManual()">Save recipe</button>
     </div>
   </div>`;
-  // Initialise with 3 empty ingredient rows if none exist
-  if(ingRows.length===0){ addIngredientRow(); addIngredientRow(); addIngredientRow(); }
+  // Initialise with 3 empty ingredient rows only on first load
+  if(!addTabInitialised){ ingRows=[]; addIngredientRow(); addIngredientRow(); addIngredientRow(); addTabInitialised=true; }
   updatePreview();
 }
 
@@ -1094,6 +1218,7 @@ window.handleAI = async function() {
     document.getElementById('m-url').value=url;
     document.getElementById('m-desc').value=r.description||'';
     document.getElementById('m-notes').value=r.notes||'';
+    document.getElementById('m-img').value=r.imageUrl||'';
     ingRows=[]; const builder=document.getElementById('ing-list-builder'); if(builder) builder.innerHTML='';
     (r.ingredients||[]).forEach(i=>addIngredientRow(i));
     document.getElementById('m-steps').value=(r.steps||[]).join('\n');
@@ -1109,6 +1234,7 @@ window.handleAI = async function() {
 
 const UNITS = ['','g','kg','ml','l','tbsp','tsp','cup','oz','lb','pinch','handful','slice','tin','bunch','clove','sprig'];
 let ingRows = [];
+let addTabInitialised = false;
 
 window.addIngredientRow = function(ing) {
   const id = Date.now().toString()+Math.random().toString(36).slice(2,6);
@@ -1201,11 +1327,11 @@ window.handleManual = async function() {
   const servings=parseInt(document.getElementById('m-servings').value)||4;
   const dietTags=DIET_OPTIONS.filter(d=>document.getElementById('dt-'+d)?.checked);
   const stepsText=document.getElementById('m-steps').value.trim();
-  const meal={id:Date.now().toString(),title,url:document.getElementById('m-url').value.trim(),description:document.getElementById('m-desc').value.trim(),cookTime:document.getElementById('m-cooktime').value.trim(),notes:document.getElementById('m-notes').value.trim(),estimatedCost:null,costSource:null,servings,currentServings:formCS,starred:false,dietTags,ingredients,steps:stepsText?stepsText.split('\n').filter(l=>l.trim()):[],selected:false,addedAt:Date.now()};
+  const imgUrl=document.getElementById('m-img')?.value.trim()||'';
+  const meal={id:Date.now().toString(),title,url:document.getElementById('m-url').value.trim(),imageUrl:imgUrl,description:document.getElementById('m-desc').value.trim(),cookTime:document.getElementById('m-cooktime').value.trim(),notes:document.getElementById('m-notes').value.trim(),estimatedCost:null,costSource:null,servings,currentServings:formCS,starred:false,dietTags,ingredients,steps:stepsText?stepsText.split('\n').filter(l=>l.trim()):[],selected:false,addedAt:Date.now()};
   state.meals.push(meal);
-  recalcMealCosts();
   await pushState();
-  ['m-title','m-cooktime','m-url','m-desc','m-steps','m-notes','add-url','add-hint'].forEach(id=>{ const e=document.getElementById(id); if(e) e.value=''; });
+  ['m-title','m-cooktime','m-url','m-img','m-desc','m-steps','m-notes','add-url','add-hint'].forEach(id=>{ const e=document.getElementById(id); if(e) e.value=''; });
   document.getElementById('m-servings').value='4'; formCS=4; const fcs=document.getElementById('form-cs'); if(fcs) fcs.textContent='4';
   DIET_OPTIONS.forEach(d=>{ const e=document.getElementById('dt-'+d); if(e) e.checked=false; });
   ingRows=[];
@@ -1214,11 +1340,166 @@ window.handleManual = async function() {
   showToast('Recipe saved!');
 };
 
+
+// ── NOTIFICATIONS ─────────────────────────────────────────────────────────────
+function getMissingIngredients(mealId) {
+  const meal = getMeal(mealId); if(!meal) return [];
+  return meal.ingredients.filter((ing,idx) => !state.haveItems[mealId+'-have-'+idx]);
+}
+
+async function checkMealNotifications() {
+  if(!('Notification' in window) || Notification.permission !== 'granted') return;
+  const tk = todayKey(), tmk = tomorrowKey();
+  const todayMealId = state.weekPlan[tk], tmMealId = state.weekPlan[tmk];
+  if(todayMealId) {
+    const missing = getMissingIngredients(todayMealId);
+    if(missing.length > 0) {
+      const meal = getMeal(todayMealId);
+      new Notification('🛒 Shopping needed for tonight!', {
+        body: meal.title+' needs: '+missing.slice(0,3).map(i=>i.name).join(', ')+(missing.length>3?' + '+(missing.length-3)+' more':''),
+        tag: 'tonight-meal'
+      });
+    }
+  }
+  if(tmMealId && new Date().getHours() >= 17) {
+    const missing = getMissingIngredients(tmMealId);
+    if(missing.length > 0) {
+      const meal = getMeal(tmMealId);
+      new Notification('📋 Plan ahead — missing ingredients for tomorrow', {
+        body: meal.title+' needs: '+missing.slice(0,3).map(i=>i.name).join(', ')+(missing.length>3?' + '+(missing.length-3)+' more':''),
+        tag: 'tomorrow-meal'
+      });
+    }
+  }
+}
+
+function bootNotifications() {
+  if(localStorage.getItem('mealplanner-notif-enabled') && Notification.permission === 'granted') {
+    setTimeout(checkMealNotifications, 3000);
+    setInterval(checkMealNotifications, 60*60*1000);
+  }
+}
+
+window.requestNotifications = async function() {
+  if(!('Notification' in window)){ showToast('Notifications not supported on this browser'); return; }
+  const result = await Notification.requestPermission();
+  if(result === 'granted'){
+    showToast('✅ Notifications enabled!');
+    localStorage.setItem('mealplanner-notif-enabled','1');
+    bootNotifications();
+    checkMealNotifications();
+  } else {
+    showToast('Notifications blocked — enable in browser/phone settings');
+  }
+  renderSettings();
+};
+
+window.disableNotifications = function() {
+  localStorage.removeItem('mealplanner-notif-enabled');
+  showToast('Reminders turned off');
+  renderSettings();
+};
+
+// ── FREEZER TAB ─────────────────────────────────────────────────────────────
+function renderFreezer() {
+  const el = document.getElementById('tab-freezer'); if(!el) return;
+  const items = state.freezer||[];
+  let h = '<div style="font-size:17px;font-weight:700;color:var(--text-primary);margin-bottom:4px;">❄️ Freezer Stock</div>';
+  h += '<div style="font-size:13px;color:var(--text-secondary);margin-bottom:1rem;">'+items.length+' item'+(items.length!==1?'s':'')+' stored</div>';
+  if(!items.length){
+    h+='<div style="text-align:center;padding:2rem 1rem;"><div style="font-size:40px;margin-bottom:8px;">❄️</div><p style="font-size:15px;font-weight:600;margin-bottom:6px;color:var(--text-primary);">Freezer is empty</p><p style="font-size:13px;color:var(--text-secondary);">Add meals and ingredients you have frozen below.</p></div>';
+  } else {
+    h+='<div style="display:flex;flex-direction:column;gap:6px;margin-bottom:1rem;">';
+    items.forEach((item,i)=>{
+      const isLow = item.qty!==null && item.qty<=1;
+      h+='<div class="shop-item">'
+        +'<span style="font-size:20px;flex-shrink:0;">'+(item.emoji||'🧊')+'</span>'
+        +'<div style="flex:1;min-width:0;">'
+        +'<div style="font-size:14px;font-weight:600;color:var(--text-primary);">'+item.name+'</div>'
+        +'<div style="font-size:12px;color:var(--text-secondary);">'+(item.qty!==null?item.qty+' portions':'')+' '+(item.addedAt?'· Frozen '+new Date(item.addedAt).toLocaleDateString('en-GB',{day:'numeric',month:'short'}):'')+' </div>'
+        +'</div>'
+        +(isLow?'<span style="font-size:10px;background:#FAEEDA;color:#854F0B;padding:2px 7px;border-radius:10px;font-weight:600;">Low</span>':'')
+        +'<div style="display:flex;align-items:center;gap:4px;">'
+        +'<button onclick="adjustFreezer('+i+',-1)" class="p-btn">−</button>'
+        +'<span class="p-num" style="min-width:28px;text-align:center;">'+(item.qty!==null?item.qty:'-')+'</span>'
+        +'<button onclick="adjustFreezer('+i+',1)" class="p-btn">+</button>'
+        +'<button onclick="removeFreezer('+i+')" class="cell-rm" style="font-size:18px;padding:0 4px;">✕</button>'
+        +'</div></div>';
+    });
+    h+='</div>';
+  }
+  h+='<div class="card"><div style="font-size:14px;font-weight:600;margin-bottom:12px;color:var(--text-primary);">❄️ Add to freezer</div>'
+    +'<div style="display:flex;flex-direction:column;gap:8px;">'
+    +'<input type="text" id="fz-name" placeholder="e.g. Bolognese, chicken breasts..." style="width:100%;"/>'
+    +'<div style="display:flex;gap:8px;">'
+    +'<div style="flex:1;"><div class="lbl" style="margin-bottom:4px;">Portions / qty</div><input type="number" id="fz-qty" placeholder="e.g. 4" min="0" style="width:100%;"/></div>'
+    +'<div style="width:80px;"><div class="lbl" style="margin-bottom:4px;">Emoji</div><input type="text" id="fz-emoji" placeholder="🧊" maxlength="2" style="width:100%;font-size:20px;text-align:center;"/></div>'
+    +'</div>'
+    +'<button class="btn btn-primary btn-block" onclick="addFreezer()">❄️ Add to freezer</button>'
+    +'</div></div>';
+  el.innerHTML = h;
+}
+
+window.addFreezer = async function() {
+  const name=document.getElementById('fz-name').value.trim();
+  const qty=document.getElementById('fz-qty').value;
+  const emoji=document.getElementById('fz-emoji').value.trim();
+  if(!name) return;
+  if(!state.freezer) state.freezer=[];
+  state.freezer.push({id:'fz'+Date.now(),name,qty:qty!==''?parseInt(qty):null,emoji:emoji||'🧊',addedAt:Date.now()});
+  await pushState(); renderFreezer(); showToast('Added to freezer!');
+};
+
+window.removeFreezer = async function(i) {
+  state.freezer.splice(i,1); await pushState(); renderFreezer();
+};
+
+window.adjustFreezer = async function(i,delta) {
+  const item=state.freezer[i]; if(!item) return;
+  const cur=item.qty!==null?item.qty:1;
+  item.qty=Math.max(0,cur+delta);
+  if(item.qty===0){
+    if(confirm('Remove '+item.name+' from freezer?')){ state.freezer.splice(i,1); } else { item.qty=1; }
+  }
+  await pushState(); renderFreezer();
+};
+
 // ── SETTINGS TAB ───────────────────────────────────────────────────────────
 function renderSettings() {
   const el = document.getElementById('tab-settings'); if(!el) return;
   const cfg = {...(config||{}), defaultCooks: state.defaultCooks||{}};
-  el.innerHTML=`<div class="card">
+  const th = getCurrentTheme();
+  const curScheme = th.scheme||'green';
+  const curDark = th.dark||false;
+  el.innerHTML=`
+  <div class="card">
+    <div style="font-size:14px;font-weight:600;margin-bottom:14px;">Appearance</div>
+    <div class="lbl" style="margin-bottom:10px;">Colour scheme</div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
+      ${[
+        {id:'green', label:'Green', bg:'#1D9E75'},
+        {id:'terra', label:'Terracotta', bg:'#D85A30'},
+        {id:'navy', label:'Navy', bg:'#185FA5'},
+        {id:'purple', label:'Purple', bg:'#534AB7'}
+      ].map(s=>`<button onclick="setScheme('${s.id}')" style="display:flex;flex-direction:column;align-items:center;gap:5px;background:none;border:none;cursor:pointer;padding:4px;">
+        <div style="width:44px;height:44px;border-radius:50%;background:${s.bg};border:3px solid ${curScheme===s.id?s.bg:'transparent'};box-shadow:${curScheme===s.id?'0 0 0 2px '+s.bg:'none'};outline:${curScheme===s.id?'3px solid rgba(0,0,0,0.15)':'none'};transition:all 0.15s;"></div>
+        <span style="font-size:11px;font-weight:${curScheme===s.id?'600':'400'};color:var(--text-primary);">${s.label}</span>
+      </button>`).join('')}
+    </div>
+    <div class="lbl" style="margin-bottom:10px;">Mode</div>
+    <div style="display:flex;gap:10px;">
+      <button onclick="setDarkMode(false)" style="flex:1;padding:10px;border-radius:10px;border:2px solid ${!curDark?'var(--accent)':'var(--border-strong)'};background:${!curDark?'var(--accent-light)':'transparent'};font-size:13px;font-weight:${!curDark?'600':'400'};cursor:pointer;color:var(--text-primary);font-family:inherit;transition:all 0.15s;">☀️ Light</button>
+      <button onclick="setDarkMode(true)" style="flex:1;padding:10px;border-radius:10px;border:2px solid ${curDark?'var(--accent)':'var(--border-strong)'};background:${curDark?'var(--accent-light)':'transparent'};font-size:13px;font-weight:${curDark?'600':'400'};cursor:pointer;color:var(--text-primary);font-family:inherit;transition:all 0.15s;">🌙 Dark</button>
+    </div>
+  </div>
+  <div class="card">
+    <div style="font-size:14px;font-weight:600;margin-bottom:10px;">Missing ingredient reminders</div>
+    <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;line-height:1.5;">Get notified if you're missing ingredients for tonight's meal, and the evening before for tomorrow's meal. Mark ingredients as "Have it" in the Meals tab to suppress reminders.</p>
+    ${Notification.permission==='granted'?
+      `<div style="display:flex;align-items:center;gap:8px;"><span style="font-size:13px;color:var(--accent);font-weight:600;">&#x2705; Notifications enabled</span><button class="btn btn-sm btn-danger" onclick="disableNotifications()">Turn off</button></div>`:
+      `<button class="btn btn-primary" onclick="requestNotifications()">🔔 Enable reminders</button>`}
+  </div>
+  <div class="card">
     <div style="font-size:14px;font-weight:600;margin-bottom:14px;">Firebase config</div>
     <div style="display:flex;flex-direction:column;gap:8px;">
       <div><div class="lbl">apiKey</div><input type="text" id="s-apikey" value="${cfg.fbApiKey||''}"/></div>
@@ -1253,6 +1534,18 @@ function renderSettings() {
   </div>`;
 }
 
+window.setScheme = function(scheme) {
+  const th = getCurrentTheme();
+  applyTheme(scheme, th.dark||false);
+  renderSettings();
+  showToast('Colour scheme updated!');
+};
+window.setDarkMode = function(dark) {
+  const th = getCurrentTheme();
+  applyTheme(th.scheme||'green', dark);
+  renderSettings();
+  showToast(dark ? 'Dark mode on!' : 'Light mode on!');
+};
 window.saveDefaultCooks = async function() {
   if(!state.defaultCooks) state.defaultCooks={};
   [0,1,2,3,4,5,6].forEach(d=>{ const el=document.getElementById('dc-'+d); if(el) state.defaultCooks[d]=el.value; });
@@ -1284,6 +1577,7 @@ window.disconnectFirebase = function() {
 };
 
 // ── Toast ──────────────────────────────────────────────────────────────────
+function haptic(ms) { try{ if(navigator.vibrate) navigator.vibrate(ms||10); }catch(e){} }
 function showToast(msg) {
   const t=document.createElement('div');
   t.style.cssText='position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:#1a1a1a;color:#fff;padding:10px 18px;border-radius:20px;font-size:13px;font-weight:500;z-index:900;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,0.2);';
