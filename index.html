@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#1D9E75">
 <title>Meal Planner</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-text-size-adjust:100%;}
 
 /* ── THEME VARIABLES ─────────────────────────────────────── */
 :root{
@@ -189,7 +189,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .btn-ghost:hover{background:#f0f0f0;color:#1a1a1a;}
 .btn-block{width:100%;}
 /* forms */
-input[type="text"],input[type="url"],input[type="number"],input[type="password"],textarea,select{width:100%;padding:9px 12px;border-radius:8px;border:0.5px solid rgba(0,0,0,0.18);background:#fff;color:#1a1a1a;font-size:14px;font-family:inherit;}
+input[type="text"],input[type="url"],input[type="number"],input[type="password"],textarea,select{width:100%;padding:9px 12px;border-radius:8px;border:0.5px solid rgba(0,0,0,0.18);background:#fff;color:#1a1a1a;font-size:16px;font-family:inherit;}
 textarea{resize:vertical;min-height:80px;line-height:1.5;}
 input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px rgba(0,0,0,0.08);}
 .lbl{font-size:12px;color:#555;margin-bottom:4px;display:block;}
@@ -447,8 +447,8 @@ import { getFirestore, doc, setDoc, onSnapshot, getDoc } from 'https://www.gstat
 const LOCAL_KEY = 'mealplanner-config-v1';
 const DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 const SHORT = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-const DIET_OPTIONS = ['Vegetarian','Vegan','Gluten-free','Dairy-free','Nut-free','Low-carb'];
-const DIET_COLORS = {'Vegetarian':'badge-green','Vegan':'badge-green','Gluten-free':'badge-amber','Dairy-free':'badge-blue','Nut-free':'badge-red','Low-carb':'badge-purple'};
+const DIET_OPTIONS = ['Italian','Mexican','Indian','Chinese','Thai','Japanese','British','American','French','Greek','Middle Eastern','Spanish','Mediterranean','Asian'];
+const DIET_COLORS = {'Italian':'badge-amber','Mexican':'badge-red','Indian':'badge-amber','Chinese':'badge-red','Thai':'badge-green','Japanese':'badge-blue','British':'badge-purple','American':'badge-red','French':'badge-blue','Greek':'badge-green','Middle Eastern':'badge-amber','Spanish':'badge-red','Mediterranean':'badge-green','Asian':'badge-blue'};
 const DOC_ID = 'shared';
 
 // ── State ──────────────────────────────────────────────────────────────────
@@ -936,7 +936,7 @@ function renderMeals() {
       ${isExp ? `<div class="ing-list">${meal.ingredients.map((ing,idx)=>{
         const s=ing.amount?Math.round(ing.amount*sf*10)/10:null, hk=meal.id+'-have-'+idx, haveIt=!!state.haveItems[hk];
         const pb=state.pricebook?.[ing.name.toLowerCase()], pbS=pb&&ing.amount&&s?pb*(s/ing.amount):pb;
-        return `<div class="ing-item ${haveIt?'have-it':''}"><div class="ing-dot"></div><span class="ing-name">${s?`${s}${ing.unit?' '+ing.unit:''} `:''}${ing.name}</span><button onclick="toggleHave('${hk}',${!haveIt})" style="margin-left:auto;font-size:10px;padding:2px 7px;border-radius:12px;border:1px solid ${haveIt?'var(--border-strong)':'var(--border)'};background:${haveIt?'var(--stat-bg)':'transparent'};color:${haveIt?'var(--text-secondary)':'var(--text-hint)'};cursor:pointer;font-family:inherit;flex-shrink:0;white-space:nowrap;">${haveIt?'✓ Have it':'Have it?'}</button></div>`;
+        return `<div class="ing-item"><div class="ing-dot"></div><span class="ing-name">${s?`${s}${ing.unit?' '+ing.unit:''} `:''}${ing.name}</span></div>`;
       }).join('')}</div>${meal.notes?`<div class="note-bubble">📝 ${meal.notes}</div>`:''}`:''}
     </div>`;
   });
@@ -999,7 +999,7 @@ window.openEditMeal = function(id) {
         <div><div class="lbl">Cook for</div><input type="number" id="e-current-servings" value="${meal.currentServings||meal.servings||4}" min="1" max="40"/></div>
       </div>
       <div>
-        <div class="lbl">Dietary tags</div>
+        <div class="lbl">Cuisine</div>
         <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;">${DIET_OPTIONS.map(d=>`<label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" id="e-dt-${d.replace(/[^a-z]/gi,'-')}" style="width:auto;accent-color:var(--accent);" ${(meal.dietTags||[]).includes(d)?'checked':''}/> ${d}</label>`).join('')}</div>
       </div>
       <div>
@@ -1112,7 +1112,7 @@ function renderShopping() {
   const totalTicked=needToBuy.filter(i=>i.keys.some(k=>checked[k])).length+staples.filter(s=>s.ticked).length+extras.filter(e=>e.ticked).length;
   const totalAll=needToBuy.length+staples.length+extras.length;
   const globalNote=state.shopNotes?.['global']||'';
-  let h=`<div class="top-bar"><div><span style="font-size:15px;font-weight:600;">${totalAll} items</span><span style="font-size:13px;color:var(--text-secondary);margin-left:8px;">${totalTicked} ticked off</span></div><div style="display:flex;gap:8px;"><button class="btn-ghost btn" onclick="shareShoppingList()">📤 Share</button><button class="clear-btn" onclick="clearAllTicked()">Clear ticked</button></div></div>
+  let h=`<div class="top-bar"><div><span style="font-size:15px;font-weight:600;">${totalAll} items</span><span style="font-size:13px;color:var(--text-secondary);margin-left:8px;">${totalTicked} ticked off</span></div><div style="display:flex;gap:8px;">${navigator.share?`<button class="btn-ghost btn" onclick="shareShoppingList()">📤 Share</button>`:`<button class="btn-ghost btn" onclick="copyShoppingList()">📋 Copy list</button>`}<button class="clear-btn" onclick="clearAllTicked()">Clear ticked</button></div></div>
   <div class="progress-bar"><div class="progress-fill" style="width:${totalAll?Math.round(totalTicked/totalAll*100):0}%"></div></div>`;
   if (globalNote) h+=`<div style="font-size:12px;color:#185FA5;background:#E6F1FB;border-radius:6px;padding:6px 10px;margin-bottom:10px;display:flex;justify-content:space-between;">📋 ${globalNote}<button onclick="editShopNote()" style="background:none;border:none;cursor:pointer;font-size:11px;color:#185FA5;font-family:inherit;">Edit</button></div>`;
   else h+=`<div style="margin-bottom:10px;"><button class="btn-ghost btn" onclick="editShopNote()">+ Add shopping note</button></div>`;
@@ -1191,6 +1191,28 @@ function renderAdd() {
     </div>
   </div>
   <div class="card">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+      <span style="font-size:14px;font-weight:600;color:var(--text-primary);">Import from a recipe website</span>
+    </div>
+    <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;line-height:1.5;">Paste a URL from BBC Good Food, Waitrose, Tesco, Delicious, Nigella and most recipe sites — no AI needed, completely free.</p>
+    <div style="display:flex;gap:8px;margin-bottom:8px;">
+      <input type="url" id="scrape-url" placeholder="https://www.bbcgoodfood.com/recipes/..." style="flex:1;min-width:0;"/>
+      <button class="btn btn-primary" id="btn-scrape" onclick="handleScrape()" style="white-space:nowrap;">Import</button>
+    </div>
+    <div id="scrape-status" style="font-size:12px;color:var(--text-secondary);"></div>
+  </div>
+  <div class="card">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+      <span style="font-size:14px;font-weight:600;color:var(--text-primary);">Paste an ingredients list</span>
+    </div>
+    <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;line-height:1.5;">Copy and paste the full recipe — title, cook time, ingredients and method. The app will sort it all automatically.</p>
+    <textarea id="paste-ing" placeholder="Spaghetti Bolognese&#10;Cook time: 45 mins | Serves 4&#10;&#10;Ingredients&#10;400g beef mince&#10;2 onions, finely chopped&#10;400g tin chopped tomatoes&#10;&#10;Method&#10;1. Brown the mince in a pan.&#10;2. Add onions and cook 5 mins.&#10;3. Add tomatoes and simmer 25 mins." style="min-height:160px;margin-bottom:8px;font-size:13px;"></textarea>
+    <button class="btn btn-primary btn-block" onclick="handlePasteImport()">Parse full recipe</button>
+    <div id="paste-status" style="font-size:12px;color:var(--text-secondary);margin-top:6px;"></div>
+  </div>
+  <div class="card">
     <div style="font-size:14px;font-weight:600;margin-bottom:14px;color:var(--text-primary);">Enter recipe manually</div>
     <div style="display:flex;flex-direction:column;gap:10px;">
       <div class="form-row"><div class="form-group" style="flex:1"><div class="lbl">Title *</div><input type="text" id="m-title" placeholder="e.g. Spaghetti bolognese"/></div><div class="form-group" style="flex:1"><div class="lbl">Cook time</div><input type="text" id="m-cooktime" placeholder="e.g. 45 mins"/></div></div>
@@ -1204,7 +1226,7 @@ function renderAdd() {
         </div>
         <div id="portions-preview" class="portions-preview" style="margin-top:10px;">Add ingredients below to see a scaled preview.</div>
       </div>
-      <div class="form-group"><div class="lbl">Dietary tags</div><div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;">${DIET_OPTIONS.map(d=>`<label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" id="dt-${d}" style="width:auto;accent-color:var(--accent);"/> ${d}</label>`).join('')}</div></div>
+      <div class="form-group"><div class="lbl">Cuisine</div><div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;">${DIET_OPTIONS.map(d=>`<label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" id="dt-${d.replace(/\s+/g,'-')}" style="width:auto;accent-color:var(--accent);"/> ${d}</label>`).join('')}</div></div>
       <div class="form-group"><div class="lbl">Ingredients</div><div id="ing-list-builder" style="display:flex;flex-direction:column;gap:6px;margin-bottom:8px;"></div><button type="button" class="btn btn-sm" onclick="addIngredientRow()" style="margin-top:2px;">+ Add ingredient</button></div>
       <div class="form-group"><div class="lbl">Method / steps (one per line)</div><textarea id="m-steps" placeholder="Brown the mince in a hot pan.&#10;Add onion and garlic.&#10;Pour in tomatoes and simmer 20 mins." style="min-height:90px;"></textarea></div>
       <div class="form-group"><div class="lbl">Notes & tips</div><input type="text" id="m-notes" placeholder="e.g. Freezes well. Can swap lamb for beef."/></div>
@@ -1226,6 +1248,301 @@ window.updatePreview = function() {
   preview.innerHTML=`<div style="display:flex;justify-content:space-between;margin-bottom:6px;font-weight:600;"><span>Recipe for ${rs} → cooking for ${formCS}</span><span class="badge badge-amber">×${sf.toFixed(2)}</span></div>`+
     ings.map(ing=>{ const s=ing.amount?Math.round(ing.amount*sf*10)/10:null,orig=ing.amount?`${ing.amount}${ing.unit?' '+ing.unit:''}`:'',sStr=s?`${s}${ing.unit?' '+ing.unit:''}`:''; return`<div style="display:flex;justify-content:space-between;padding:2px 0;font-size:12px;"><span>${ing.name}</span><span>${sf!==1?`<span style="text-decoration:line-through;color:#ccc;margin-right:6px;">${orig}</span><strong>${sStr}</strong>`:`<span>${orig}</span>`}</span></div>`; }).join('')+
     (ingRows.length>5?`<div style="color:#aaa;margin-top:3px;font-size:11px;">+ more ingredients...</div>`:'');
+};
+
+
+// ── SMART IMPORT ─────────────────────────────────────────────────────────────
+
+// Unit synonyms for normalisation
+const UNIT_MAP = {
+  'grams':'g','gram':'g','g':'g',
+  'kilograms':'kg','kilogram':'kg','kg':'kg',
+  'ml':'ml','millilitres':'ml','milliliters':'ml',
+  'litres':'l','liters':'l','liter':'l','litre':'l','l':'l',
+  'tablespoons':'tbsp','tablespoon':'tbsp','tbsps':'tbsp','tbsp':'tbsp','tbs':'tbsp',
+  'teaspoons':'tsp','teaspoon':'tsp','tsps':'tsp','tsp':'tsp','ts':'tsp',
+  'cups':'cup','cup':'cup',
+  'ounces':'oz','ounce':'oz','oz':'oz',
+  'pounds':'lb','pound':'lb','lb':'lb','lbs':'lb',
+  'pinch':'pinch','pinches':'pinch',
+  'handful':'handful','handfuls':'handful',
+  'slices':'slice','slice':'slice',
+  'tins':'tin','tin':'tin','cans':'tin','can':'tin',
+  'bunches':'bunch','bunch':'bunch',
+  'cloves':'clove','clove':'clove',
+  'sprigs':'sprig','sprig':'sprig',
+};
+
+// Fractions to decimals
+function parseFraction(str) {
+  const frac = {'1/4':0.25,'1/3':0.333,'1/2':0.5,'2/3':0.667,'3/4':0.75,'1/8':0.125};
+  if(frac[str]) return frac[str];
+  if(str.includes('/')) {
+    const [n,d] = str.split('/');
+    return parseFloat(n)/parseFloat(d);
+  }
+  return parseFloat(str)||null;
+}
+
+function parseIngredientLine(line) {
+  // Strip leading bullet/dash/asterisk
+  line = line.replace(/^[•\-\*–—]\s*/, '').trim();
+  if(!line) return null;
+
+  // Regex: optional number (inc fractions), optional unit, rest is name
+  const re = /^([\d¼-¾⅐-↉\/\.\s]+?)?\s*([a-zA-Z]+)?\s+(.+)$/;
+  const m = line.match(re);
+
+  if(m) {
+    const rawNum = (m[1]||'').trim();
+    const rawUnit = (m[2]||'').toLowerCase().trim();
+    const rest = (m[3]||'').trim();
+
+    // Parse number (handle "1 1/2" style)
+    let amount = null;
+    if(rawNum) {
+      const parts = rawNum.split(/\s+/);
+      amount = parts.reduce((acc, p) => acc + (parseFraction(p)||0), 0) || null;
+    }
+
+    // Normalise unit
+    const unit = UNIT_MAP[rawUnit] || '';
+    const name = unit ? rest : ((rawUnit ? rawUnit+' ' : '') + rest).trim();
+
+    // Clean name - strip prep notes after comma
+    const cleanName = name.replace(/,.*$/, '').trim();
+
+    if(cleanName.length > 1) return {name: cleanName, amount, unit};
+  }
+
+  // Fallback - treat whole line as name
+  return {name: line.replace(/,.*$/, '').trim(), amount: null, unit: ''};
+}
+
+function populateIngredients(ings) {
+  ingRows = [];
+  addTabInitialised = true;
+  const builder = document.getElementById('ing-list-builder');
+  if(builder) builder.innerHTML = '';
+  ings.forEach(ing => addIngredientRow(ing));
+  if(!ings.length) { addIngredientRow(); addIngredientRow(); addIngredientRow(); }
+  updatePreview();
+}
+
+// ── Option 1: Smart paste parser ─────────────────────────────────────────────
+window.handlePasteImport = function() {
+  const text = document.getElementById('paste-ing').value.trim();
+  const status = document.getElementById('paste-status');
+  if(!text) { status.textContent = 'Please paste some text first.'; return; }
+
+  const lines = text.split('\n').map(l=>l.trim());
+
+  // ── Detect sections ────────────────────────────────────────────────────
+  const ingHeaders = /^(ingredients?|what you.?ll need|you will need|shopping list)s?:?$/i;
+  const methodHeaders = /^(method|steps?|instructions?|directions?|how to (make|cook)|preparation)s?:?$/i;
+  const timePattern = /(?:prep|cook|total|cooking)\s*(?:time)?\s*[:\-]?\s*(\d+\s*(?:h(?:ours?)?|m(?:ins?|inutes?)?)(?:\s*\d+\s*(?:m(?:ins?|inutes?)?))?)/i;
+  const servesPattern = /(?:serves?|servings?|makes?|portions?)\s*[:\-]?\s*(\d+)/i;
+
+  let title = '', cookTime = '', servings = '', ingLines = [], stepLines = [];
+  let mode = 'header'; // header | ingredients | method
+
+  for(let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    if(!line) continue;
+
+    if(ingHeaders.test(line)) { mode = 'ingredients'; continue; }
+    if(methodHeaders.test(line)) { mode = 'method'; continue; }
+
+    // Time detection anywhere
+    if(!cookTime) {
+      const tm = line.match(timePattern);
+      if(tm) { cookTime = tm[1].trim(); continue; }
+    }
+
+    // Serves detection
+    if(!servings) {
+      const sm = line.match(servesPattern);
+      if(sm) { servings = sm[1]; }
+    }
+
+    if(mode === 'header') {
+      // First non-empty line is the title if we haven't got one
+      if(!title && line.length > 2 && line.length < 120) { title = line; continue; }
+    } else if(mode === 'ingredients') {
+      // Skip lines that look like section headers or notes
+      if(methodHeaders.test(line)) { mode = 'method'; continue; }
+      ingLines.push(line);
+    } else if(mode === 'method') {
+      stepLines.push(line);
+    }
+  }
+
+  // If no section headers found, try to intelligently split
+  if(!ingLines.length && !stepLines.length) {
+    const allLines = lines.filter(Boolean);
+    // Lines that look like ingredients (start with number/quantity)
+    const ingRegex = /^[\d¼-¾⅐-↉\/]|^\d|^(a |an |some |large|small|medium|handful|pinch|splash)/i;
+    // Lines that look like steps (start with number+dot, or are long sentences)
+    const stepRegex = /^\d+[\.\)]\s+|^(heat|add|mix|stir|cook|bake|fry|boil|simmer|place|remove|season|pour|chop|dice|slice|preheat|combine|whisk)/i;
+
+    allLines.forEach(line => {
+      if(stepRegex.test(line) && line.length > 30) stepLines.push(line);
+      else if(ingRegex.test(line) && line.length < 80) ingLines.push(line);
+    });
+
+    // If still nothing, treat all as ingredients
+    if(!ingLines.length) ingLines = allLines.filter(l => l.length < 80);
+  }
+
+  // ── Populate form fields ───────────────────────────────────────────────
+  let filled = [];
+
+  if(title) { document.getElementById('m-title').value = title; filled.push('title'); }
+  if(cookTime) { document.getElementById('m-cooktime').value = cookTime; filled.push('cook time'); }
+  if(servings) { document.getElementById('m-servings').value = parseInt(servings)||4; filled.push('servings'); }
+
+  // Parse and populate ingredients
+  const parsedIngs = ingLines.map(parseIngredientLine).filter(Boolean);
+  if(parsedIngs.length) {
+    populateIngredients(parsedIngs);
+    filled.push(parsedIngs.length+' ingredients');
+  }
+
+  // Clean and populate steps
+  if(stepLines.length) {
+    const cleanSteps = stepLines
+      .map(l => l.replace(/^\d+[\.\)]\s*/, '').trim()) // remove "1. " prefix
+      .filter(l => l.length > 2);
+    if(cleanSteps.length) {
+      document.getElementById('m-steps').value = cleanSteps.join('\n');
+      filled.push('method');
+    }
+  }
+
+  if(!filled.length) { status.textContent = 'Could not parse anything — try the manual form below.'; return; }
+
+  document.getElementById('paste-ing').value = '';
+  status.innerHTML = '<span style="color:var(--accent);">✓ Filled in: '+filled.join(', ')+'. Review below and save.</span>';
+  document.getElementById('m-title').scrollIntoView({behavior:'smooth', block:'start'});
+};
+
+// ── Option 2: Recipe URL scraper ─────────────────────────────────────────────
+window.handleScrape = async function() {
+  const url = document.getElementById('scrape-url').value.trim();
+  const status = document.getElementById('scrape-status');
+  const btn = document.getElementById('btn-scrape');
+  if(!url) { status.textContent = 'Please enter a URL.'; return; }
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="ldots"><span></span><span></span><span></span></span>';
+  status.textContent = 'Fetching recipe...';
+
+  try {
+    // Try multiple CORS proxies in sequence
+    const proxies = [
+      u => 'https://api.allorigins.win/get?url=' + encodeURIComponent(u),
+      u => 'https://corsproxy.io/?' + encodeURIComponent(u),
+      u => 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(u),
+    ];
+    let html = null;
+    for(const makeProxy of proxies) {
+      try {
+        status.textContent = 'Trying to fetch recipe...';
+        const res = await fetch(makeProxy(url), {signal: AbortSignal.timeout(8000)});
+        if(!res.ok) continue;
+        const ct = res.headers.get('content-type')||'';
+        if(ct.includes('json')) {
+          const data = await res.json();
+          html = data.contents || data.body || null;
+        } else {
+          html = await res.text();
+        }
+        if(html && html.length > 500) break;
+      } catch(e) { continue; }
+    }
+    if(!html) throw new Error('Could not fetch page');
+
+    // Try JSON-LD schema first (used by BBC Good Food, Waitrose, etc.)
+    const jsonLdMatch = html.match(/<script[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/gi);
+    let recipe = null;
+
+    if(jsonLdMatch) {
+      for(const block of jsonLdMatch) {
+        try {
+          const inner = block.replace(/<script[^>]*>|<\/script>/gi, '');
+          const parsed = JSON.parse(inner);
+          const items = Array.isArray(parsed) ? parsed : (parsed['@graph'] || [parsed]);
+          recipe = items.find(i => i['@type'] === 'Recipe' || (Array.isArray(i['@type']) && i['@type'].includes('Recipe')));
+          if(recipe) break;
+        } catch(e) {}
+      }
+    }
+
+    if(recipe) {
+      // Populate title, description, cook time, servings
+      if(recipe.name) document.getElementById('m-title').value = recipe.name;
+      if(recipe.description) document.getElementById('m-desc').value = recipe.description.replace(/<[^>]*>/g,'').trim().slice(0,200);
+      if(recipe.totalTime || recipe.cookTime) {
+        const t = recipe.totalTime || recipe.cookTime;
+        const mins = t.match(/PT(?:(\d+)H)?(?:(\d+)M)?/);
+        if(mins) {
+          const h = parseInt(mins[1]||0), m = parseInt(mins[2]||0);
+          document.getElementById('m-cooktime').value = h>0 ? h+'h '+(m>0?m+'m':'') : m+'m';
+        }
+      }
+      if(recipe.recipeYield) {
+        const y = Array.isArray(recipe.recipeYield) ? recipe.recipeYield[0] : recipe.recipeYield;
+        const num = parseInt(y); if(num) document.getElementById('m-servings').value = num;
+      }
+      if(recipe.image) {
+        const img = Array.isArray(recipe.image) ? recipe.image[0] : recipe.image;
+        document.getElementById('m-img').value = typeof img === 'string' ? img : (img.url||'');
+      }
+      document.getElementById('m-url').value = url;
+
+      // Parse ingredients
+      const rawIngs = recipe.recipeIngredient || [];
+      const parsed = rawIngs.map(parseIngredientLine).filter(Boolean);
+      populateIngredients(parsed);
+
+      // Steps
+      if(recipe.recipeInstructions) {
+        const steps = Array.isArray(recipe.recipeInstructions)
+          ? recipe.recipeInstructions.map(s => typeof s === 'string' ? s : (s.text||'')).filter(Boolean)
+          : [recipe.recipeInstructions];
+        document.getElementById('m-steps').value = steps.map(s=>s.replace(/<[^>]*>/g,'').trim()).join('\n');
+      }
+
+      status.innerHTML = '<span style="color:var(--accent);">\u2713 Recipe imported! Review and save below.</span>';
+      document.getElementById('scrape-url').value = '';
+      document.getElementById('m-title').scrollIntoView({behavior:'smooth', block:'start'});
+    } else {
+      // Fallback: try to find ingredient lists in raw HTML
+      const ingMatches = html.match(/class="[^"]*ingredient[^"]*"[^>]*>([^<]+)/gi) || [];
+      if(ingMatches.length > 0) {
+        const rawIngs = ingMatches.map(m => m.replace(/<[^>]*>/g,'').replace(/class="[^"]*"/g,'').trim()).filter(Boolean);
+        const parsed = rawIngs.map(parseIngredientLine).filter(Boolean);
+        if(parsed.length) {
+          populateIngredients(parsed);
+          document.getElementById('m-url').value = url;
+          status.innerHTML = '<span style="color:var(--accent);">\u2713 Found '+parsed.length+' ingredients. Fill in the title and other details below.</span>';
+        } else {
+          throw new Error('no_recipe');
+        }
+      } else {
+        throw new Error('no_recipe');
+      }
+    }
+  } catch(e) {
+    if(e.message === 'no_recipe') {
+      status.innerHTML = 'Could not find a recipe on that page. Try the <strong>Paste ingredients</strong> option below instead.';
+    } else {
+      status.innerHTML = 'Could not fetch that URL — the site may block imports. Try pasting the ingredients below instead.';
+    }
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Import';
 };
 
 window.handleAI = async function() {
@@ -1354,7 +1671,7 @@ window.handleManual = async function() {
   if(!ingredients.length){ errEl.style.display=''; errEl.textContent='Please add at least one ingredient.'; return; }
   errEl.style.display='none';
   const servings=parseInt(document.getElementById('m-servings').value)||4;
-  const dietTags=DIET_OPTIONS.filter(d=>document.getElementById('dt-'+d)?.checked);
+  const dietTags=DIET_OPTIONS.filter(d=>document.getElementById('dt-'+d.replace(/\s+/g,'-'))?.checked);
   const stepsText=document.getElementById('m-steps').value.trim();
   const imgUrl=document.getElementById('m-img')?.value.trim()||'';
   const meal={id:Date.now().toString(),title,url:document.getElementById('m-url').value.trim(),imageUrl:imgUrl,description:document.getElementById('m-desc').value.trim(),cookTime:document.getElementById('m-cooktime').value.trim(),notes:document.getElementById('m-notes').value.trim(),estimatedCost:null,costSource:null,servings,currentServings:formCS,starred:false,dietTags,ingredients,steps:stepsText?stepsText.split('\n').filter(l=>l.trim()):[],selected:false,addedAt:Date.now()};
