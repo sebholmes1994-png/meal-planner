@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="theme-color" content="#1D9E75">
 <title>Meal Planner</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;-webkit-text-size-adjust:100%;}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-text-size-adjust:100%;}button,input,select,textarea,a{touch-action:manipulation;}
 
 /* ── THEME VARIABLES ─────────────────────────────────────── */
 :root{
@@ -701,7 +701,7 @@ function seedDemo() {
 // ── Date utils ─────────────────────────────────────────────────────────────
 function getWeekDates() {
   const t = new Date();
-  return Array.from({length:9},(_,i)=>{ const d=new Date(t); d.setDate(t.getDate()+i); return d; });
+  return Array.from({length:7},(_,i)=>{ const d=new Date(t); d.setDate(t.getDate()+i); return d; });
 }
 function dk(d){ return new Date(d).toISOString().slice(0,10); }
 function todayKey(){ return dk(new Date()); }
@@ -735,51 +735,20 @@ window.switchTab = function(tab) {
 // ── WEEK TAB ───────────────────────────────────────────────────────────────
 function renderWeek() {
   const el = document.getElementById('tab-week'); if(!el) return;
-  const dates = getWeekDates(), tk = todayKey(), tmk = tomorrowKey();
-  const tM = state.weekPlan[tk] ? getMeal(state.weekPlan[tk]) : null;
-  const tmM = state.weekPlan[tmk] ? getMeal(state.weekPlan[tmk]) : null;
-  const assignedIds = new Set(Object.values(state.weekPlan||{}));
-  const unassigned = state.meals; // Show all meals so same meal can be assigned to multiple days
-  let h = '';
-
-  // New week button
-  const hasFutureMeals = dates.slice(2).some(d=>state.weekPlan[dk(d)]);
-  if(hasFutureMeals) h += `<div style="display:flex;justify-content:flex-end;margin-bottom:8px;"><button class="btn btn-sm" onclick="newWeek()" style="font-size:12px;color:#185FA5;border-color:#185FA5;">🔄 Clear future meals</button></div>`;
-
-  // Tonight
-  h += `<div class="today-card"><div class="spot-lbl">Tonight</div>
-    ${tM ? `<div class="spot-title">${tM.starred?'★ ':''}${tM.title}</div>
-      <div class="spot-meta">${tM.cookTime?'⏱ '+tM.cookTime+' · ':''}👤 ${tM.currentServings||tM.servings} portions</div>
-      ${state.dayNotes&&state.dayNotes[tk+'-cook']?`<div style="margin-top:6px;"><span style="font-size:12px;background:var(--accent-light);color:var(--accent-dark);padding:3px 10px;border-radius:20px;font-weight:600;">🧑‍🍳 ${state.dayNotes[tk+'-cook']==='Both'?'Both are cooking':state.dayNotes[tk+'-cook']+' is cooking'}</span></div>`:''}
-      <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
-        <button class="btn btn-primary btn-sm" onclick="switchTab('shopping')">View ingredients</button>
-        <button class="btn btn-sm" onclick="openMealDetail('${tM.id}')">Steps & notes</button>
-        <button class="btn btn-sm btn-danger" onclick="removeDayMeal('${tk}')">Remove</button>
-      </div>`
-    : `<div style="font-size:14px;color:var(--text-secondary);margin-bottom:10px;">No meal planned for tonight.</div>${renderInlinePicker(tk)}`}
-  </div>`;
-
-  // Tomorrow
-  h += `<div class="tomorrow-card"><div class="spot-lbl" style="color:#185FA5;">Tomorrow</div>
-    ${tmM ? `<div class="spot-title">${tmM.title}</div>
-      <div class="spot-meta">${tmM.cookTime?'⏱ '+tmM.cookTime+' · ':''}👤 ${tmM.currentServings||tmM.servings} portions</div>
-      ${state.dayNotes&&state.dayNotes[tmk+'-cook']?`<div style="margin-top:6px;"><span style="font-size:12px;background:var(--accent-light);color:var(--accent-dark);padding:3px 10px;border-radius:20px;font-weight:600;">🧑‍🍳 ${state.dayNotes[tmk+'-cook']==='Both'?'Both are cooking':state.dayNotes[tmk+'-cook']+' is cooking'}</span></div>`:''}
-      <button class="btn btn-sm btn-danger" style="margin-top:8px;" onclick="removeDayMeal('${tmk}')">Remove</button>`
-    : `<div style="font-size:14px;color:var(--text-secondary);margin-bottom:10px;">No meal planned for tomorrow.</div>${renderInlinePicker(tmk)}`}
-  </div>`;
-
-  // Week grid - inline dropdown per day
+  const dates = getWeekDates(), tk = todayKey();
+  const hasFutureMeals = dates.slice(1).some(d=>state.weekPlan[dk(d)]);
   const filledDays = dates.filter(d=>state.weekPlan[dk(d)]).length;
-  const planComplete = filledDays >= 7;
-  h += `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-    <div class="section-hdr" style="margin:0;">This week's plan</div>
-    <span style="font-size:12px;color:${planComplete?'#0F6E56':'#888'};">${filledDays}/9 days planned ${planComplete?'✅':''}</span>
-  </div><div style="margin-bottom:1rem;">`;
   const mealOpts = state.meals.map(m=>`<option value="${m.id}">${m.starred?'★ ':''}${m.title}</option>`).join('');
+  let h = '';
+  if(hasFutureMeals) h += `<div style="display:flex;justify-content:flex-end;margin-bottom:8px;"><button class="btn btn-sm" onclick="newWeek()" style="font-size:12px;color:#185FA5;border-color:#185FA5;">🔄 Clear future meals</button></div>`;
+  h += `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+    <div class="section-hdr" style="margin:0;">This week</div>
+    <span style="font-size:12px;color:${filledDays>=7?'var(--accent)':'var(--text-hint)'};">${filledDays}/7 days planned${filledDays>=7?' ✅':''}</span>
+  </div><div style="margin-bottom:1rem;">`;
   dates.forEach(d => {
     const key=dk(d), mId=state.weekPlan[key], meal=mId?getMeal(mId):null;
-    const isT=isToday(d), isTom=isTomorrow(d);
-    const dayLabel = isT?'Today':isTom?'Tomorrow':SHORT[d.getDay()];
+    const isT=isToday(d);
+    const dayLabel = isT?'Today':SHORT[d.getDay()];
     const dateLabel = d.toLocaleDateString('en-GB',{day:'numeric',month:'short'});
     const cookVal = state.dayNotes&&state.dayNotes[key+'-cook'];
     const dayNote = state.dayNotes&&state.dayNotes[key];
@@ -797,6 +766,10 @@ function renderWeek() {
           </span>
         </div>`:''}
         ${dayNote&&meal?`<div style="font-size:10px;color:var(--text-secondary);padding:2px 0 4px 2px;">📝 ${dayNote}</div>`:''}
+        ${isT&&meal?`<div style="display:flex;gap:6px;margin-bottom:5px;flex-wrap:wrap;">
+          <button class="btn btn-primary btn-sm" onclick="switchTab('shopping')">View ingredients</button>
+          <button class="btn btn-sm" onclick="openMealDetail('${meal.id}')">Steps & notes</button>
+        </div>`:''}
         ${!meal?(state.meals.length?`<div style="margin-bottom:5px;">
           <select style="width:100%;font-size:13px;padding:7px 8px;border-radius:8px;border:0.5px solid var(--border);background:var(--bg-input);color:var(--text-primary);" onchange="if(this.value)doAssignMeal('${key}',this.value)">
             <option value="">— pick a meal —</option>
@@ -822,9 +795,10 @@ function renderWeek() {
       </div>
     </div>`;
   });
-  h += `</div>`;
+  h += '</div>';
   el.innerHTML = h;
 }
+
 
 function renderInlinePicker(key) {
   if (!state.meals.length) return `<span style="font-size:13px;color:#888;">Add recipes first using the + Add tab.</span>`;
@@ -925,6 +899,7 @@ function renderMeals() {
           <button class="star-btn ${meal.starred?'on':''}" onclick="toggleStar('${meal.id}')">★</button>
           <div style="display:flex;gap:1px;margin-top:3px;">${[1,2,3,4,5].map(n=>`<button onclick="rateMeal('${meal.id}',${n})" style="background:none;border:none;cursor:pointer;font-size:14px;padding:0;line-height:1;color:${(meal.rating||0)>=n?'#F0A500':'var(--border-strong)'};">★</button>`).join('')}</div>
           <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;">
+            <button class="btn btn-xs" onclick="openDayPicker('${meal.id}')" title="Plan for a day" style="color:var(--accent);border-color:var(--accent);">📅</button>
             <button class="btn btn-xs" onclick="toggleExpand('${meal.id}')" title="${isExp?'Hide ingredients':'View ingredients'}">${isExp?'▲':'▼ View'}</button>
             <button class="btn btn-xs" onclick="openMealDetail('${meal.id}')" title="Steps & notes">📋</button>
             <button class="btn btn-xs" onclick="openEditMeal('${meal.id}')" title="Edit recipe">✏️</button>
@@ -951,6 +926,31 @@ window.toggleMeal = async function(id,checked) { const m=getMeal(id); if(m){m.se
 window.changeServings = async function(id,delta) { const m=getMeal(id); if(m){m.currentServings=Math.max(1,(m.currentServings||m.servings)+delta); renderMeals(); renderShopping(); pushState();} };
 window.deleteMeal = async function(id) { const m=getMeal(id); if(!confirm('Delete "'+(m?m.title:'this recipe')+'"? This cannot be undone.')) return; state.meals=state.meals.filter(m=>m.id!==id); Object.keys(state.weekPlan||{}).forEach(k=>{if(state.weekPlan[k]===id)delete state.weekPlan[k];}); await pushState(); renderMeals(); renderShopping(); renderWeek(); };
 window.toggleExpand = function(id) { expanded[id]=!expanded[id]; renderMeals(); };
+window.openDayPicker = function(mealId) {
+  const meal = getMeal(mealId); if(!meal) return;
+  const dates = getWeekDates();
+  const opts = dates.map(d => {
+    const key = dk(d);
+    const isT = isToday(d), label = isT?'Today':SHORT[d.getDay()]+' '+d.toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+    const assigned = state.weekPlan[key]===mealId;
+    return `<button onclick="pickDayForMeal('${mealId}','${key}')" style="display:block;width:100%;text-align:left;padding:10px 12px;border:none;background:${assigned?'var(--accent-light)':'transparent'};border-radius:8px;font-size:14px;cursor:pointer;color:${assigned?'var(--accent-dark)':'var(--text-primary)'};font-family:inherit;font-weight:${assigned?'600':'400'};">${label}${assigned?' ✓':''}</button>`;
+  }).join('');
+  document.getElementById('modal-container').innerHTML=`<div class="modal-overlay" onclick="closeModal(event,this)"><div class="modal">
+    <h2>📅 Plan "${meal.title}"</h2>
+    <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;">Choose a day to add this meal to your week:</p>
+    ${opts}
+    <div class="modal-actions"><button class="btn" onclick="closeModal()">Cancel</button></div>
+  </div></div>`;
+};
+window.pickDayForMeal = async function(mealId, key) {
+  if(!state.weekPlan) state.weekPlan = {};
+  state.weekPlan[key] = mealId;
+  const m = getMeal(mealId); if(m) m.selected = true;
+  closeModal();
+  renderMeals(); renderWeek(); renderShopping();
+  pushState();
+  showToast('Added to ' + (isToday(new Date(key))?'tonight':new Date(key).toLocaleDateString('en-GB',{weekday:'long'}))+'!');
+};
 window.rateMeal = async function(id,rating) { const m=getMeal(id); if(m){m.rating=m.rating===rating?0:rating; renderMeals(); pushState();} };
 window.saveDayNote = function(key,val) {
   if(!state.dayNotes) state.dayNotes={};
@@ -1136,14 +1136,18 @@ function renderShopping() {
       const tags=item.meals.map(m=>`<span class="shop-tag tag-meal">${m}</span>`).join(' ');
       const noteKey='item-note-'+item.name.toLowerCase().replace(/\s+/g,'-'), note=state.shopNotes?.[noteKey];
       const pb=state.pricebook?.[item.name.toLowerCase()];
-      h+=`<div class="shop-item ${isTicked?'ticked':''}">
-        <input type="checkbox" class="shop-check" ${isTicked?'checked':''} onchange="tickRecipe('${item.keys.join(',')}',this.checked)"/>
-        <span class="shop-name">${item.name}</span>
-        <span class="shop-qty">${qty}</span>
-        
-        <span style="margin-left:4px;">${tags}</span>
-        <button class="note-btn" onclick="addItemNote('${noteKey}','${item.name}')">${note?'📝':'note'}</button>
-      </div>${note?`<div class="shop-note-line">${note}<button onclick="addItemNote('${noteKey}','${item.name}')" style="background:none;border:none;cursor:pointer;font-size:11px;color:#185FA5;font-family:inherit;">Edit</button></div>`:''}`;
+      h+=`<div class="shop-item ${isTicked?'ticked':''}" style="align-items:flex-start;">
+        <input type="checkbox" class="shop-check" ${isTicked?'checked':''} onchange="tickRecipe('${item.keys.join(',')}',this.checked)" style="margin-top:3px;"/>
+        <div style="flex:1;min-width:0;">
+          <div class="shop-name">${item.name}</div>
+          <div style="display:flex;align-items:center;gap:6px;margin-top:3px;flex-wrap:wrap;">
+            ${qty?`<span class="shop-qty">${qty}</span>`:''}
+            ${tags}
+            ${note?`<button class="note-btn" onclick="addItemNote('${noteKey}','${item.name}')">📝</button>`:`<button class="note-btn" onclick="addItemNote('${noteKey}','${item.name}')">+ note</button>`}
+          </div>
+          ${note?`<div style="font-size:11px;color:#185FA5;margin-top:3px;">${note} <button onclick="addItemNote('${noteKey}','${item.name}')" style="background:none;border:none;cursor:pointer;font-size:11px;color:#185FA5;font-family:inherit;">Edit</button></div>`:''}
+        </div>
+      </div>`;
     });
   });
   if(haveAlready.length){
@@ -1708,16 +1712,7 @@ async function checkMealNotifications() {
       });
     }
   }
-  if(tmMealId && new Date().getHours() >= 17) {
-    const missing = getMissingIngredients(tmMealId);
-    if(missing.length > 0) {
-      const meal = getMeal(tmMealId);
-      new Notification('📋 Plan ahead — missing ingredients for tomorrow', {
-        body: meal.title+' needs: '+missing.slice(0,3).map(i=>i.name).join(', ')+(missing.length>3?' + '+(missing.length-3)+' more':''),
-        tag: 'tomorrow-meal'
-      });
-    }
-  }
+  // Tomorrow notification removed per user preference — tonight only
 }
 
 function bootNotifications() {
@@ -1841,7 +1836,7 @@ function renderSettings() {
   </div>
   <div class="card">
     <div style="font-size:14px;font-weight:600;margin-bottom:10px;">Missing ingredient reminders</div>
-    <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;line-height:1.5;">Get notified if you're missing ingredients for tonight's meal, and the evening before for tomorrow's meal. Mark ingredients as "Have it" in the Meals tab to suppress reminders.</p>
+    <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;line-height:1.5;">Get notified when you open the app and are missing ingredients for tonight's meal. Tick items off on the shopping list to suppress reminders.</p>
     ${Notification.permission==='granted'?
       `<div style="display:flex;align-items:center;gap:8px;"><span style="font-size:13px;color:var(--accent);font-weight:600;">&#x2705; Notifications enabled</span><button class="btn btn-sm btn-danger" onclick="disableNotifications()">Turn off</button></div>`:
       `<button class="btn btn-primary" onclick="requestNotifications()">🔔 Enable reminders</button>`}
