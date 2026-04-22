@@ -899,7 +899,6 @@ function renderMeals() {
           <button class="star-btn ${meal.starred?'on':''}" onclick="toggleStar('${meal.id}')">★</button>
           <div style="display:flex;gap:1px;margin-top:3px;">${[1,2,3,4,5].map(n=>`<button onclick="rateMeal('${meal.id}',${n})" style="background:none;border:none;cursor:pointer;font-size:14px;padding:0;line-height:1;color:${(meal.rating||0)>=n?'#F0A500':'var(--border-strong)'};">★</button>`).join('')}</div>
           <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;">
-            <button class="btn btn-xs" onclick="openDayPicker('${meal.id}')" title="Plan for a day" style="color:var(--accent);border-color:var(--accent);">📅</button>
             <button class="btn btn-xs" onclick="toggleExpand('${meal.id}')" title="${isExp?'Hide ingredients':'View ingredients'}">${isExp?'▲':'▼ View'}</button>
             <button class="btn btn-xs" onclick="openMealDetail('${meal.id}')" title="Steps & notes">📋</button>
             <button class="btn btn-xs" onclick="openEditMeal('${meal.id}')" title="Edit recipe">✏️</button>
@@ -908,6 +907,14 @@ function renderMeals() {
         </div>
       </div>
       <div class="portions-ctrl"><span>Cook for:</span><button class="p-btn" onclick="changeServings('${meal.id}',-1)">−</button><span class="p-num">${cs}</span><button class="p-btn" onclick="changeServings('${meal.id}',1)">+</button>${sf!==1?`<span class="badge badge-amber">×${sf.toFixed(2)} (recipe: ${meal.servings})</span>`:''}</div>
+      ${meal.selected?`<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:8px;padding-top:8px;border-top:0.5px solid var(--border);">
+        <span style="font-size:11px;color:var(--text-secondary);flex-shrink:0;">Night:</span>
+        ${getWeekDates().map(d=>{
+          const key=dk(d), isT=isToday(d), assigned=state.weekPlan[key]===meal.id;
+          const label=isT?'Tonight':SHORT[d.getDay()];
+          return `<button onclick="toggleDayForMeal('${meal.id}','${key}')" style="padding:4px 10px;border-radius:16px;font-size:11px;font-weight:500;border:0.5px solid ${assigned?'var(--accent)':'var(--border-strong)'};background:${assigned?'var(--accent)':'transparent'};color:${assigned?'#fff':'var(--text-secondary)'};cursor:pointer;font-family:inherit;white-space:nowrap;">${label}</button>`;
+        }).join('')}
+      </div>`:''}
       ${isExp ? `<div class="ing-list">${meal.ingredients.map((ing,idx)=>{
         const s=ing.amount?Math.round(ing.amount*sf*10)/10:null, hk=meal.id+'-have-'+idx, haveIt=!!state.haveItems[hk];
         const pb=state.pricebook?.[ing.name.toLowerCase()], pbS=pb&&ing.amount&&s?pb*(s/ing.amount):pb;
@@ -941,6 +948,21 @@ window.openDayPicker = function(mealId) {
     ${opts}
     <div class="modal-actions"><button class="btn" onclick="closeModal()">Cancel</button></div>
   </div></div>`;
+};
+window.toggleDayForMeal = async function(mealId, key) {
+  if(!state.weekPlan) state.weekPlan = {};
+  if(state.weekPlan[key] === mealId) {
+    // already assigned — unassign
+    delete state.weekPlan[key];
+    showToast('Removed from ' + (isToday(new Date(key))?'tonight':new Date(key).toLocaleDateString('en-GB',{weekday:'long'})));
+  } else {
+    // assign
+    state.weekPlan[key] = mealId;
+    const m = getMeal(mealId); if(m) m.selected = true;
+    showToast('Added to ' + (isToday(new Date(key))?'tonight':new Date(key).toLocaleDateString('en-GB',{weekday:'long'}))+'!');
+  }
+  renderMeals(); renderWeek(); renderShopping();
+  pushState();
 };
 window.pickDayForMeal = async function(mealId, key) {
   if(!state.weekPlan) state.weekPlan = {};
